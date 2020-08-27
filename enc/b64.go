@@ -21,7 +21,7 @@ func encode(b uint16) string {
 	return string(b64_table[b])
 }
 
-// adapted from
+// Adapted from
 // https://go.googlesource.com/go/+/refs/tags/go1.15/src/encoding/hex/hex.go#83
 func fromHexChar(c byte) uint16 {
 	switch {
