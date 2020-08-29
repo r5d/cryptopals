@@ -3,6 +3,7 @@
 
 package lib
 
+// Both 'a' and 'b' must be hex encoded string.
 func FixedXOR(a, b string) string {
 	cs := ""
 	if len(a) != len(b) {
