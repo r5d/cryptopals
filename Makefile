@@ -6,3 +6,7 @@ build: fmt
 fmt:
 	go fmt -x ${MOD} ${MOD}/challenge ${MOD}/enc
 
+clean:
+	go clean
+	rm -f *~ ./*/*~
+.PHONY: clean
