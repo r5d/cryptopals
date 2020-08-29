@@ -6,5 +6,3 @@ build: fmt
 fmt:
 	go fmt -x ${MOD} ${MOD}/challenge ${MOD}/enc
 
-bin:
-	mkdir -p bin
