@@ -1,7 +1,7 @@
 // Copyright © 2020 rsiddharth <s@ricketyspace.net>
 // SPDX-License-Identifier: ISC
 
-package enc
+package lib
 
 // Adapted from
 // https://go.googlesource.com/go/+/refs/tags/go1.15/src/encoding/hex/hex.go#83

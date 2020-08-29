@@ -1,7 +1,7 @@
 // Copyright © 2020 rsiddharth <s@ricketyspace.net>
 // SPDX-License-Identifier: ISC
 
-package enc
+package lib
 
 const b64_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 

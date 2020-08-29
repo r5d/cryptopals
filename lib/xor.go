@@ -1,7 +1,7 @@
 // Copyright © 2020 rsiddharth <s@ricketyspace.net>
 // SPDX-License-Identifier: ISC
 
-package enc
+package lib
 
 func FixedXOR(a, b string) string {
 	cs := ""
