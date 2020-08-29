@@ -1,7 +1,7 @@
 MOD=ricketyspace.net/cryptopals
 
-build: fmt bin
-	go build -o bin/c1 c1.go
+build: fmt
+	go build
 
 fmt:
 	go fmt -x ${MOD} ${MOD}/enc
