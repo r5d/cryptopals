@@ -10,7 +10,9 @@ func HexToBase64(hex string) string {
 
 	b64 := ""
 	for i := 0; i <= len(hb)-3; i = i + 3 {
-		a := fromHexChar(hb[i])<<8 | fromHexChar(hb[i+1])<<4 | fromHexChar(hb[i+2])
+		a := (fromHexChar(hb[i])<<8 |
+			fromHexChar(hb[i+1])<<4 |
+			fromHexChar(hb[i+2]))
 		b64 += encode(a >> 6)
 		b64 += encode(a & 0b111111)
 	}
