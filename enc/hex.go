@@ -14,3 +14,13 @@ func HexCharToDec(c byte) uint16 {
 	}
 	return 0
 }
+
+func DecToHexChar(i uint16) byte {
+	switch {
+	case 0 <= i && i <= 9:
+		return byte(48 + i)
+	case 10 <= i && i <= 15:
+		return byte(97 + (i - 10))
+	}
+	return 0
+}

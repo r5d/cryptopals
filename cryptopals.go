@@ -20,5 +20,7 @@ func main() {
 		flag.PrintDefaults()
 	case 1:
 		challenge.C1()
+	case 2:
+		challenge.C2()
 	}
 }
