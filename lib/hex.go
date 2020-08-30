@@ -24,3 +24,32 @@ func DecToHexChar(i uint16) byte {
 	}
 	return 0
 }
+
+// 'h' must be hex encoded string.
+func HexStrToAsciiStr(h string) string {
+	a := ""
+	lh := len(h)
+
+	if lh < 1 {
+		return a
+	}
+	if lh == 1 {
+		return string(HexCharToDec(h[0]))
+	}
+
+	for i := 0; i < lh; i += 2 {
+		b := HexCharToDec(h[i])<<4 | HexCharToDec(h[i+1])
+		a += string(b)
+	}
+	return a
+}
+
+func ByteToHexStr(b byte) string {
+	p := DecToHexChar(uint16(b >> 4))
+	q := DecToHexChar(uint16(b & 0xf))
+
+	s := string(p)
+	s += string(q)
+
+	return s
+}

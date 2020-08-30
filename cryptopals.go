@@ -22,5 +22,7 @@ func main() {
 		challenge.C1()
 	case 2:
 		challenge.C2()
+	case 3:
+		challenge.C3()
 	}
 }
