@@ -1,7 +1,8 @@
 # cryptopals
 
-nothing exciting, just trying out the challenges from
-[cryptopals.com][cp].
+nothing exciting.
+
+trying out the challenges from [cryptopals.com][cp].
 
 [cp]: https://cryptopals.com
 
