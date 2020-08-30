@@ -1,6 +1,6 @@
 # cryptopals
 
-nothing exciting. just trying out the challenges from
+nothing exciting, just trying out the challenges from
 [cryptopals.com][cp].
 
 [cp]: https://cryptopals.com
