@@ -8,7 +8,7 @@ trying out the challenges from [cryptopals.com][cp].
 
 ## building
 
-requires `go >= 1.15` and `make`.
+requires `go >= 1.11` and `make`.
 
 ```bash
  make
