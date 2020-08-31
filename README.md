@@ -8,7 +8,7 @@ trying out the challenges from [cryptopals.com][cp].
 
 ## running
 
-requires `go >= 1.11`.
+requires `go >= 1.11`
 
 install it with:
 
