@@ -10,8 +10,14 @@ trying out the challenges from [cryptopals.com][cp].
 
 requires `go >= 1.11`.
 
-```bash
- go get ricketyspace.net/cryptopals
+install it with:
 
- cryptopals -c CHALLENGE_NUM
+```bash
+go get ricketyspace.net/cryptopals
+```
+
+run challenges with:
+
+```bash
+cryptopals -c CHALLENGE_NUM
 ```
