@@ -14,7 +14,7 @@ func HexToBase64(hex string) string {
 			HexCharToDec(hb[i+1])<<4 |
 			HexCharToDec(hb[i+2]))
 		b64 += encode(a >> 6)
-		b64 += encode(a & 0b111111)
+		b64 += encode(a & 0x3f)
 	}
 	return b64
 }
