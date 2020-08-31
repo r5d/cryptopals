@@ -21,3 +21,33 @@ func FixedXOR(a, b string) string {
 	}
 	return cs
 }
+
+// Both 'data' and 'key' need to be plain ascii string.
+func RepeatingXOR(data, key string) string {
+	xs := ""
+	if len(data) < 1 || len(key) < 1 {
+		return xs
+	}
+
+	// data in bytes
+	db := []byte(data)
+
+	// key in bytes
+	dk := []byte(key)
+
+	lk := len(key)
+	for i, ki := 0, 0; i < len(db); i++ {
+		if ki == lk {
+			ki = 0
+		}
+
+		// xor a byte
+		eb := db[i] ^ dk[ki]
+
+		// append to result
+		xs += string(eb)
+
+		ki += 1
+	}
+	return xs
+}
