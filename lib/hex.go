@@ -44,16 +44,6 @@ func HexStrToAsciiStr(h string) string {
 	return a
 }
 
-func ByteToHexStr(b byte) string {
-	p := DecToHexChar(uint16(b >> 4))
-	q := DecToHexChar(uint16(b & 0xf))
-
-	s := string(p)
-	s += string(q)
-
-	return s
-}
-
 func AsciiStrToHexStr(as string) string {
 	hs := ""
 	if len(as) < 1 {
@@ -65,4 +55,14 @@ func AsciiStrToHexStr(as string) string {
 		hs += ByteToHexStr(bs[i])
 	}
 	return hs
+}
+
+func ByteToHexStr(b byte) string {
+	p := DecToHexChar(uint16(b >> 4))
+	q := DecToHexChar(uint16(b & 0xf))
+
+	s := string(p)
+	s += string(q)
+
+	return s
 }
