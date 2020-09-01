@@ -54,12 +54,13 @@ func ByteToHexStr(b byte) string {
 	return s
 }
 
-func BytesToHexStr(bs []byte) string {
+func AsciiStrToHexStr(as string) string {
 	hs := ""
-	if len(bs) < 1 {
+	if len(as) < 1 {
 		return hs
 	}
 
+	bs := []byte(as)
 	for i := 0; i < len(bs); i++ {
 		hs += ByteToHexStr(bs[i])
 	}

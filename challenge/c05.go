@@ -15,7 +15,7 @@ var key string = "ICE"
 
 func C5() {
 	es := lib.RepeatingXOR(icebaby, key)
-	hs := lib.BytesToHexStr([]byte(es))
+	hs := lib.AsciiStrToHexStr(es)
 
 	fmt.Printf("RepeatingXOR('%v', '%v') = %v\n", icebaby, key, hs)
 }
