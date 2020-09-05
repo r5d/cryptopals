@@ -28,3 +28,13 @@ func stripSpaceChars(s string) string {
 	}
 	return ss
 }
+
+func isAlpha(c byte) bool {
+	switch {
+	case 'A' <= c && c <= 'Z':
+		return true
+	case 'a' <= c && c <= 'z':
+		return true
+	}
+	return false
+}
