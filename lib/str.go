@@ -29,6 +29,16 @@ func stripSpaceChars(s string) string {
 	return ss
 }
 
+func AlphaScore(bs []byte) int {
+	s := 0
+	for i := 0; i < len(bs); i++ {
+		if isAlpha(bs[i]) {
+			s += 1
+		}
+	}
+	return s
+}
+
 func isAlpha(c byte) bool {
 	switch {
 	case 'A' <= c && c <= 'Z':
