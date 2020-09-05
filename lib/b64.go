@@ -19,6 +19,38 @@ func HexToBase64(hex string) string {
 	return b64
 }
 
+func Base64ToBytes(enc string) []byte {
+	enc = stripSpaceChars(enc)
+
+	l := len(enc)
+	bs := make([]byte, 3*(l/4))
+
+	// Base64 decode.
+	for i, j := 0, 0; i <= l-4; i, j = i+4, j+3 {
+		// Jam 24 bits together.
+		a := index(enc[i])<<18 |
+			index(enc[i+1])<<12 |
+			index(enc[i+2])<<6 |
+			index(enc[i+3])
+
+		// Get first byte.
+		bs[j] = byte(a >> 16)
+
+		if enc[i+2] == '=' {
+			return bs[0 : j+1]
+		}
+		// Get second byte.
+		bs[j+1] = byte((a & 0xff00) >> 8)
+
+		if enc[i+3] == '=' {
+			return bs[0 : j+2]
+		}
+		// Get third byte.
+		bs[j+2] = byte(a & 0xff)
+	}
+	return bs
+}
+
 func encode(b uint16) string {
 	return string(b64_table[b])
 }
