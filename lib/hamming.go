@@ -32,6 +32,20 @@ func setBits(b byte) int {
 	return int(c)
 }
 
+// Returns average key size with minimum normalized hamming distance.
+// 'keyMin' is the minimum key size
+// 'keyMax' is the maximum key size
+// 'iterate' is the number of times to iterate.
+func KeySizeWithMinDistanceIter(keyMin, keyMax, iterate int) int {
+	sum := 0
+	avg := 0.0
+	for i := 0; i < iterate; i++ {
+		sum += KeySizeWithMinDistance(keyMin, keyMax)
+	}
+	avg = float64(sum) / float64(iterate)
+
+	return int(avg)
+}
 
 // Returns key size with minimum normalized hamming distance
 // 'keyMin' is the minimum key size
