@@ -64,18 +64,3 @@ func index(c byte) uint32 {
 	}
 	return uint32(0)
 }
-
-// Strip space and newline characters from string.
-func stripSpaceChars(s string) string {
-	ss := ""
-	for i := 0; i < len(s); i++ {
-		if s[i] == ' ' {
-			continue
-		}
-		if s[i] == '\n' {
-			continue
-		}
-		ss += string(s[i])
-	}
-	return ss
-}
