@@ -23,6 +23,16 @@ func encode(b uint16) string {
 	return string(b64_table[b])
 }
 
+// Return the index for a base64 character.
+func index(c byte) uint32 {
+	for i := 0; i < 64; i++ {
+		if c == b64_table[i] {
+			return uint32(i)
+		}
+	}
+	return uint32(0)
+}
+
 // Strip space and newline characters from string.
 func stripSpaceChars(s string) string {
 	ss := ""
