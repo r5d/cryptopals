@@ -9,7 +9,7 @@ func init() {
 	rand.Seed(42)
 }
 
-func HammingDistance(a, b string) int {
+func HammingDistance(a, b []byte) int {
 	if len(a) != len(b) {
 		return -1 // Fail.
 	}
