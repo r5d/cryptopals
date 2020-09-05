@@ -32,6 +32,29 @@ func setBits(b byte) int {
 	return int(c)
 }
 
+
+// Returns key size with minimum normalized hamming distance
+// 'keyMin' is the minimum key size
+// 'keyMax' is the maximum key size
+func KeySizeWithMinDistance(keyMin, keyMax int) int {
+	var mk int = 0         // Key size with min distance.
+	var md float64 = 100.0 // Distance for key size 'mk'.
+	for k := keyMin; k <= keyMax; k++ {
+		p := genKey(k)
+		q := genKey(k)
+
+		// Compute distance.
+		d := HammingDistance(p, q)
+
+		nd := float64(d) / float64(k)
+		if nd < md {
+			mk = k
+			md = nd
+		}
+	}
+	return mk
+}
+
 // Generates a key of size 'size' bytes.
 func genKey(size int) []byte {
 	bs := make([]byte, size, size)
