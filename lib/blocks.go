@@ -30,3 +30,20 @@ func BreakIntoBlocks(cb []byte, keysize int) [][]byte {
 	}
 	return blocks
 }
+
+func TransposeBlocks(blocks [][]byte, keysize int) [][]byte {
+	if len(blocks) < 1 {
+		return make([][]byte, 0)
+	}
+
+	tblocks := make([][]byte, keysize)
+	for i := 0; i < len(blocks); i++ {
+		for j := 0; j < len(blocks[i]); j++ {
+			if len(tblocks[j]) == 0 {
+				tblocks[j] = make([]byte, len(blocks))
+			}
+			tblocks[j][i] = blocks[i][j]
+		}
+	}
+	return tblocks
+}
