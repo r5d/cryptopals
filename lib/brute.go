@@ -15,15 +15,15 @@ func XORCrackSingleKey(hs string) (byte, string, float64) {
 	var scr float64 = 100.0
 
 	i := byte(0)
+	as := []byte(HexStrToAsciiStr(hs))
 	for i < 255 {
-		ks := FillStr(ByteToHexStr(i), l)
-		xs := FixedXOR(hs, ks)
-		as := HexStrToAsciiStr(xs)
+		ks := FillBytes(i, l)
+		xs := FixedXORBytes(as, ks)
 
-		s := phraseScore(as)
+		s := phraseScore(string(xs))
 		if s < scr {
 			k = i
-			ds = as
+			ds = string(xs)
 			scr = s
 		}
 		i += 1
