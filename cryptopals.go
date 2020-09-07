@@ -28,5 +28,7 @@ func main() {
 		challenge.C4()
 	case 5:
 		challenge.C5()
+	case 6:
+		challenge.C6()
 	}
 }
