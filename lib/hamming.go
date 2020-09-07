@@ -3,12 +3,6 @@
 
 package lib
 
-import "math/rand"
-
-func init() {
-	rand.Seed(42)
-}
-
 func HammingDistance(a, b []byte) int {
 	if len(a) != len(b) {
 		return -1 // Fail.
@@ -52,12 +46,4 @@ func KeySizeWithMinDistance(keyMin, keyMax int, bs []byte) int {
 		}
 	}
 	return mk
-}
-
-// Generates a key of size 'size' bytes.
-func genKey(size int) []byte {
-	bs := make([]byte, size, size)
-	rand.Read(bs)
-
-	return bs
 }
