@@ -56,6 +56,12 @@ func isAlpha(c byte) bool {
 		return true
 	case 'a' <= c && c <= 'z':
 		return true
+	case c == ' ' || c == '.':
+		return true
+	case c == ',' || c == '\'':
+		return true
+	case c == '"':
+		return true
 	}
 	return false
 }
