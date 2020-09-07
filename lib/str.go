@@ -40,7 +40,7 @@ func stripSpaceChars(s string) string {
 	return ss
 }
 
-func AlphaScore(bs []byte) int {
+func AlphaPunchScore(bs []byte) int {
 	s := 0
 	for i := 0; i < len(bs); i++ {
 		if isAlphaPunch(bs[i]) {
