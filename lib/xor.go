@@ -22,6 +22,18 @@ func FixedXOR(a, b string) string {
 	return cs
 }
 
+func FixedXORBytes(as, bs []byte) []byte {
+	if len(as) != len(bs) {
+		return make([]byte, 0)
+	}
+
+	cs := make([]byte, len(as))
+	for i := 0; i < len(as); i++ {
+		cs[i] = as[i] ^ bs[i]
+	}
+	return cs
+}
+
 // Both 'data' and 'key' need to be plain ascii string.
 func RepeatingXOR(data, key string) string {
 	xs := ""
