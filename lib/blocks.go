@@ -23,7 +23,7 @@ func BreakIntoBlocks(cb []byte, keysize int) [][]byte {
 		blocks[k][j] = cb[i]
 
 		j += 1
-		if j == 8 {
+		if j == keysize {
 			j = 0
 			k += 1
 		}
