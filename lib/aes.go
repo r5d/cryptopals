@@ -3,7 +3,7 @@
 
 package lib
 
-// Returns a key schedule (44 bytes, 11 4-byte words) given a key 'k'
+// Returns a key schedule (176 bytes, 44 4-byte words) given a key 'k'
 // (16 bytes, 4 4-byte words).
 func KeyExpansion(k []byte) [][]byte {
 	ks := make([][]byte, 44) // key schedule
