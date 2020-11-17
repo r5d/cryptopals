@@ -3,6 +3,23 @@
 
 package lib
 
+// Make and return initial state array from 16-byte input 'in'
+func MkState(in []byte) [][]byte {
+	if len(in) != 16 {
+		return [][]byte{}
+	}
+	nb := 4
+	state := make([][]byte, 4)
+
+	for r := 0; r < 4; r++ {
+		state[r] = make([]byte, nb)
+		for c := 0; c < nb; c++ {
+			state[r][c] = in[r+(4*c)]
+		}
+	}
+	return state
+}
+
 // Returns a key schedule (176 bytes, 44 4-byte words) given a key 'k'
 // (16 bytes, 4 4-byte words).
 func KeyExpansion(k []byte) [][]byte {
