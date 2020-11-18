@@ -3,6 +3,30 @@
 
 package lib
 
+func AddRoundKey(state, ks [][]byte) [][]byte {
+	if len(ks) != 4 {
+		return state
+	}
+	nb := 4
+
+	// Get tranpose of ks.
+	ks_t := make([][]byte, 4)
+	for i := 0; i < 4; i++ {
+		ks_t[i] = make([]byte, 4)
+		for j := 0; j < 4; j++ {
+			ks_t[i][j] = ks[j][i]
+		}
+	}
+
+	// Round key transformation.
+	for c := 0; c < nb; c++ {
+		for r := 0; r < 4; r++ {
+			state[r][c] = state[r][c] ^ ks_t[r][c]
+		}
+	}
+	return state
+}
+
 // Makes and returns initial the state array from 16-byte input 'in'.
 func MkState(in []byte) [][]byte {
 	if len(in) != 16 {
