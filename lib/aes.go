@@ -3,7 +3,7 @@
 
 package lib
 
-// Make and return initial state array from 16-byte input 'in'
+// Makes and returns initial the state array from 16-byte input 'in'.
 func MkState(in []byte) [][]byte {
 	if len(in) != 16 {
 		return [][]byte{}
