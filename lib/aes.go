@@ -3,6 +3,19 @@
 
 package lib
 
+func InvShiftRows(state [][]byte) [][]byte {
+	n_state := make([][]byte, 4) // New state.
+
+	nb := 4
+	for r := 0; r < 4; r++ {
+		n_state[r] = make([]byte, nb)
+		for c := 0; c < nb; c++ {
+			n_state[r][(c+r)%nb] = state[r][c]
+		}
+	}
+	return n_state
+}
+
 func AddRoundKey(state, ks [][]byte) [][]byte {
 	if len(ks) != 4 {
 		return state
