@@ -25,6 +25,14 @@ func FillBytes(c byte, l int) []byte {
 	return bs
 }
 
+func StrToBytes(s string) []byte {
+	bs := make([]byte, len(s))
+	for i := 0; i < len(s); i++ {
+		bs[i] = byte(s[i])
+	}
+	return bs
+}
+
 // Strip space and newline characters from string.
 func stripSpaceChars(s string) string {
 	ss := ""
