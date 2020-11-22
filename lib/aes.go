@@ -3,6 +3,40 @@
 
 package lib
 
+func AESInvCipher(in, ky []byte) []byte {
+	nb := 4
+	nr := 10
+
+	// Generate key schedule from key.
+	ks := KeyExpansion(ky)
+
+	// Make state from input and do first round key
+	// transformation.
+	state := MkState(in)
+	state = AddRoundKey(state, ks[(nr*nb):((nr+1)*nb)])
+
+	for round := nr - 1; round >= 1; round-- {
+		state = InvShiftRows(state)
+		state = InvSubBytes(state)
+		state = AddRoundKey(state, ks[(round*nb):((round+1)*nb)])
+		state = InvMixColumns(state)
+	}
+	state = InvShiftRows(state)
+	state = InvSubBytes(state)
+	state = AddRoundKey(state, ks[0:nb])
+
+	// Make output.
+	output := make([]byte, 4*nb)
+	i := 0
+	for c := 0; c < nb; c++ {
+		for r := 0; r < 4; r++ {
+			output[i] = state[r][c]
+			i++
+		}
+	}
+	return output
+}
+
 func InvMixColumns(state [][]byte) [][]byte {
 
 	// Initialize new state.
