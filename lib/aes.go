@@ -3,6 +3,19 @@
 
 package lib
 
+func AESDecrypt(cipher, key []byte) []byte {
+	iter := len(cipher) / 16
+
+	// Decrypt 16 bytes at a time.
+	output := make([]byte, len(cipher))
+	for i := 0; i < iter; i++ {
+		s := (i * 16)
+		e := (i * 16) + 16
+		output = append(output, AESInvCipher(cipher[s:e], key)...)
+	}
+	return output
+}
+
 func AESInvCipher(in, ky []byte) []byte {
 	nb := 4
 	nr := 10
