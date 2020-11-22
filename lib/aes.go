@@ -3,6 +3,25 @@
 
 package lib
 
+func InvMixColumns(state [][]byte) [][]byte {
+
+	// Initialize new state.
+	n_state := make([][]byte, 4)
+	nb := 4
+	for r := 0; r < 4; r++ {
+		n_state[r] = make([]byte, nb)
+	}
+
+	// Inverse mix columns transformation.
+	for c := 0; c < nb; c++ {
+		n_state[0][c] = GFMultiply(0x0e, state[0][c]) ^ GFMultiply(0x0b, state[1][c]) ^ GFMultiply(0x0d, state[2][c]) ^ GFMultiply(0x09, state[3][c])
+		n_state[1][c] = GFMultiply(0x09, state[0][c]) ^ GFMultiply(0x0e, state[1][c]) ^ GFMultiply(0x0b, state[2][c]) ^ GFMultiply(0x0d, state[3][c])
+		n_state[2][c] = GFMultiply(0x0d, state[0][c]) ^ GFMultiply(0x09, state[1][c]) ^ GFMultiply(0x0e, state[2][c]) ^ GFMultiply(0x0b, state[3][c])
+		n_state[3][c] = GFMultiply(0x0b, state[0][c]) ^ GFMultiply(0x0d, state[1][c]) ^ GFMultiply(0x09, state[2][c]) ^ GFMultiply(0x0e, state[3][c])
+	}
+	return n_state
+}
+
 func InvSubBytes(state [][]byte) [][]byte {
 	nb := 4
 	for r := 0; r < 4; r++ {
