@@ -11,32 +11,32 @@ func AESDecrypt(cipher, key []byte) []byte {
 	for i := 0; i < iter; i++ {
 		s := (i * 16)
 		e := (i * 16) + 16
-		output = append(output, AESInvCipher(cipher[s:e], key)...)
+		output = append(output, aesInvCipher(cipher[s:e], key)...)
 	}
 	return output
 }
 
-func AESInvCipher(in, ky []byte) []byte {
+func aesInvCipher(in, ky []byte) []byte {
 	nb := 4
 	nr := 10
 
 	// Generate key schedule from key.
-	ks := KeyExpansion(ky)
+	ks := aesKeyExpansion(ky)
 
 	// Make state from input and do first round key
 	// transformation.
-	state := MkState(in)
-	state = AddRoundKey(state, ks[(nr*nb):((nr+1)*nb)])
+	state := aesMkState(in)
+	state = aesAddRoundKey(state, ks[(nr*nb):((nr+1)*nb)])
 
 	for round := nr - 1; round >= 1; round-- {
-		state = InvShiftRows(state)
-		state = InvSubBytes(state)
-		state = AddRoundKey(state, ks[(round*nb):((round+1)*nb)])
-		state = InvMixColumns(state)
+		state = aesInvShiftRows(state)
+		state = aesInvSubBytes(state)
+		state = aesAddRoundKey(state, ks[(round*nb):((round+1)*nb)])
+		state = aesInvMixColumns(state)
 	}
-	state = InvShiftRows(state)
-	state = InvSubBytes(state)
-	state = AddRoundKey(state, ks[0:nb])
+	state = aesInvShiftRows(state)
+	state = aesInvSubBytes(state)
+	state = aesAddRoundKey(state, ks[0:nb])
 
 	// Make output.
 	output := make([]byte, 4*nb)
@@ -50,7 +50,7 @@ func AESInvCipher(in, ky []byte) []byte {
 	return output
 }
 
-func InvMixColumns(state [][]byte) [][]byte {
+func aesInvMixColumns(state [][]byte) [][]byte {
 
 	// Initialize new state.
 	n_state := make([][]byte, 4)
@@ -69,7 +69,7 @@ func InvMixColumns(state [][]byte) [][]byte {
 	return n_state
 }
 
-func InvSubBytes(state [][]byte) [][]byte {
+func aesInvSubBytes(state [][]byte) [][]byte {
 	nb := 4
 	for r := 0; r < 4; r++ {
 		for c := 0; c < nb; c++ {
@@ -82,7 +82,7 @@ func InvSubBytes(state [][]byte) [][]byte {
 	return state
 }
 
-func InvShiftRows(state [][]byte) [][]byte {
+func aesInvShiftRows(state [][]byte) [][]byte {
 	n_state := make([][]byte, 4) // New state.
 
 	nb := 4
@@ -95,7 +95,7 @@ func InvShiftRows(state [][]byte) [][]byte {
 	return n_state
 }
 
-func AddRoundKey(state, ks [][]byte) [][]byte {
+func aesAddRoundKey(state, ks [][]byte) [][]byte {
 	if len(ks) != 4 {
 		return state
 	}
@@ -120,7 +120,7 @@ func AddRoundKey(state, ks [][]byte) [][]byte {
 }
 
 // Makes and returns initial the state array from 16-byte input 'in'.
-func MkState(in []byte) [][]byte {
+func aesMkState(in []byte) [][]byte {
 	if len(in) != 16 {
 		return [][]byte{}
 	}
@@ -138,7 +138,7 @@ func MkState(in []byte) [][]byte {
 
 // Returns a key schedule (176 bytes, 44 4-byte words) given a key 'k'
 // (16 bytes, 4 4-byte words).
-func KeyExpansion(k []byte) [][]byte {
+func aesKeyExpansion(k []byte) [][]byte {
 	ks := make([][]byte, 44) // key schedule
 	nk := 4
 	nb := 4
@@ -161,7 +161,7 @@ func KeyExpansion(k []byte) [][]byte {
 		copy(tmp, ks[i-1])
 
 		if i%nk == 0 {
-			tmp = FixedXORBytes(SubWord(RotWord(tmp)), rcon[i/nk])
+			tmp = FixedXORBytes(aesSubWord(aesRotWord(tmp)), rcon[i/nk])
 		}
 		ks[i] = make([]byte, 4)
 		ks[i] = FixedXORBytes(ks[i-nk], tmp)
@@ -171,7 +171,7 @@ func KeyExpansion(k []byte) [][]byte {
 }
 
 // Performs a cyclic permutation to the left on the 4-byte word.
-func RotWord(w []byte) []byte {
+func aesRotWord(w []byte) []byte {
 	for i := 1; i < 4; i++ {
 		t := w[i-1]
 		w[i-1] = w[i]
@@ -181,7 +181,7 @@ func RotWord(w []byte) []byte {
 }
 
 // Performs S-Box transformation on the 4-byte word.
-func SubWord(w []byte) []byte {
+func aesSubWord(w []byte) []byte {
 	sw := make([]byte, 4)
 
 	for i := 0; i < 4; i++ {
