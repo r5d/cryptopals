@@ -11,11 +11,11 @@ func GFMultiply(a, b byte) byte {
 		return 0x00
 	}
 
-	ans := logXPlusOneOf[a] + logXPlusOneOf[b]
+	ans := uint16(logXPlusOneOf[a]) + uint16(logXPlusOneOf[b])
 	if ans >= 255 {
 		ans -= 255
 	}
-	return xPlusOneToThe[ans]
+	return xPlusOneToThe[byte(ans)]
 }
 
 var xPlusOneToThe map[byte]byte = map[byte]byte{
