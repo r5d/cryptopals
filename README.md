@@ -4,8 +4,6 @@ nothing exciting.
 
 trying out the challenges from [cryptopals.com][cp].
 
-currently working on challenge 7 in set 1.
-
 [cp]: https://cryptopals.com
 
 ## running
