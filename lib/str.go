@@ -33,6 +33,14 @@ func StrToBytes(s string) []byte {
 	return bs
 }
 
+func BytesToStr(bs []byte) string {
+	s := ""
+	for i := 0; i < len(bs); i++ {
+		s += string(bs[i])
+	}
+	return s
+}
+
 // Strip space and newline characters from string.
 func stripSpaceChars(s string) string {
 	ss := ""
