@@ -7,7 +7,7 @@ func AESDecrypt(cipher, key []byte) []byte {
 	iter := len(cipher) / 16
 
 	// Decrypt 16 bytes at a time.
-	output := make([]byte, len(cipher))
+	output := make([]byte, 0)
 	for i := 0; i < iter; i++ {
 		s := (i * 16)
 		e := (i * 16) + 16
