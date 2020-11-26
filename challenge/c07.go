@@ -83,7 +83,7 @@ func C7() {
 	fmt.Printf("%v", lib.BytesToStr(o))
 }
 
-// Decrypted text:
+// Output:
 //
 // I'm back and I'm ringin' the bell
 // A rockin' on the mike while the fly girls yell
