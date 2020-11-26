@@ -12,21 +12,25 @@ func C8() {
 	for i := 0; i < len(c08); i++ {
 		bs := lib.StrToBytes(c08[i])
 
-		if isECB(bs) {
-			fmt.Printf("Cipher at %d (%s) might be AES-ECB\n", i, c08[i])
+		block := isECB(bs)
+		if block != nil {
+			fmt.Printf("Cipher at line %d (%s)", i+1, c08[i])
+			fmt.Printf(" might be AES encrypted in ECB mode.\n")
+			fmt.Printf("16-byte block '%s'", block)
+			fmt.Printf(" occurs twice in this cipher.\n")
 		}
 	}
 }
 
-func isECB(bs []byte) bool {
+func isECB(bs []byte) []byte {
 	blocks := lib.BreakIntoBlocks(bs, 16)
 
 	for i := 0; i < len(blocks); i++ {
 		if hasMatchingBlock(i, blocks) {
-			return true
+			return blocks[i]
 		}
 	}
-	return false
+	return nil
 }
 
 func hasMatchingBlock(id int, blocks [][]byte) bool {
