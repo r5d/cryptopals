@@ -15,3 +15,8 @@ func C3() {
 	fmt.Printf("Key is '%c' (Score: %v)\n", k, scr)
 	fmt.Printf("Decrypted string: %v\n", ds)
 }
+
+// Output:
+//
+// Key is 'X' (Score: 0.03235294117647047)
+// Decrypted string: Cooking MC's like a pound of bacon
