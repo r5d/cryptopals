@@ -60,3 +60,16 @@ func BlocksEqual(a, b []byte) bool {
 	}
 	return true
 }
+
+// Performs PKCS#7 Padding on the input `in` and block size `k`.
+// Assumes 0 > `k` < 256
+// Reference: https://tools.ietf.org/html/rfc5652#section-6.3
+func Pkcs7Padding(in []byte, k int) []byte {
+	lth := len(in)
+	pd := k - (lth % k) // padding character and padding length
+
+	for i := 0; i < pd; i++ {
+		in = append(in, byte(pd))
+	}
+	return in
+}
