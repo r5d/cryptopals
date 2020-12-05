@@ -3,6 +3,22 @@
 
 package lib
 
+func AESDecryptCBC(cipher, key, iv []byte) []byte {
+	iter := len(cipher) / 16
+
+	lc := iv
+	output := make([]byte, 0)
+	for i := 0; i < iter; i++ {
+		s := (i * 16)
+		e := (i * 16) + 16
+		c := cipher[s:e]
+		output = append(output, FixedXORBytes(aesInvCipher(c, key), lc)...)
+
+		lc = c
+	}
+	return output
+}
+
 func AESDecrypt(cipher, key []byte) []byte {
 	iter := len(cipher) / 16
 
