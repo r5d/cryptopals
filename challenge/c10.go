@@ -84,92 +84,106 @@ func init() {
 }
 
 func C10() {
-	c := lib.Base64ToBytes(cipher10)
-	k := lib.StrToBytes(key10)
+	c := []byte{
+		0x76, 0x49, 0xab, 0xac, 0x81, 0x19, 0xb2, 0x46, 0xce, 0xe9, 0x8e, 0x9b, 0x12, 0xe9, 0x19, 0x7d,
+		0x50, 0x86, 0xcb, 0x9b, 0x50, 0x72, 0x19, 0xee, 0x95, 0xdb, 0x11, 0x3a, 0x91, 0x76, 0x78, 0xb2,
+		0x73, 0xbe, 0xd6, 0xb8, 0xe3, 0xc1, 0x74, 0x3b, 0x71, 0x16, 0xe6, 0x9e, 0x22, 0x22, 0x95, 0x16,
+		0x3f, 0xf1, 0xca, 0xa1, 0x68, 0x1f, 0xac, 0x09, 0x12, 0x0e, 0xca, 0x30, 0x75, 0x86, 0xe1, 0xa7,
+	}
+	k := []byte{0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c}
+	iv := []byte{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f}
+	o := lib.AESDecryptCBC(c, k, iv)
+	fmt.Printf("NIST SP 800-38A F.2.2:%v\n", lib.BytesToHexStr(o))
 
-	o := lib.AESDecryptCBC(c, k, iv10)
-	fmt.Printf("%v", lib.BytesToStr(o))
+	c = lib.Base64ToBytes(cipher10)
+	k = lib.StrToBytes(key10)
+	iv = iv10
+
+	o = lib.AESDecryptCBC(c, k, iv)
+	fmt.Printf("\nCryptopals Ch. 10:\n%v", lib.BytesToStr(o))
 }
 
 // Output:
+// NIST SP 800-38A F.2.2: 6b c1 be e2 2e 40 9f 96 e9 3d 7e 11 73 93 17 2a ae 2d 8a 57 1e 03 ac 9c 9e b7 6f ac 45 af 8e 51 30 c8 1c 46 a3 5c e4 11 e5 fb c1 19 1a 0a 52 ef f6 9f 24 45 df 4f 9b 17 ad 2b 41 7b e6 6c 37 10
 //
-// I'm back and I'm ringin' the bell 
-// A rockin' on the mike while the fly girls yell 
-// In ecstasy in the back of me 
-// Well that's my DJ Deshay cuttin' all them Z's 
-// Hittin' hard and the girlies goin' crazy 
-// Vanilla's on the mike, man I'm not lazy. 
-
-// I'm lettin' my drug kick in 
-// It controls my mouth and I begin 
-// To just let it flow, let my concepts go 
-// My posse's to the side yellin', Go Vanilla Go! 
-
-// Smooth 'cause that's the way I will be 
-// And if you don't give a damn, then 
-// Why you starin' at me 
-// So get off 'cause I control the stage 
-// There's no dissin' allowed 
-// I'm in my own phase 
-// The girlies sa y they love me and that is ok 
-// And I can dance better than any kid n' play 
-
-// Stage 2 -- Yea the one ya' wanna listen to 
-// It's off my head so let the beat play through 
-// So I can funk it up and make it sound good 
-// 1-2-3 Yo -- Knock on some wood 
-// For good luck, I like my rhymes atrocious 
-// Supercalafragilisticexpialidocious 
-// I'm an effect and that you can bet 
-// I can take a fly girl and make her wet. 
-
-// I'm like Samson -- Samson to Delilah 
-// There's no denyin', You can try to hang 
-// But you'll keep tryin' to get my style 
-// Over and over, practice makes perfect 
-// But not if you're a loafer. 
-
-// You'll get nowhere, no place, no time, no girls 
-// Soon -- Oh my God, homebody, you probably eat 
-// Spaghetti with a spoon! Come on and say it! 
-
-// VIP. Vanilla Ice yep, yep, I'm comin' hard like a rhino 
-// Intoxicating so you stagger like a wino 
-// So punks stop trying and girl stop cryin' 
-// Vanilla Ice is sellin' and you people are buyin' 
-// 'Cause why the freaks are jockin' like Crazy Glue 
-// Movin' and groovin' trying to sing along 
-// All through the ghetto groovin' this here song 
-// Now you're amazed by the VIP posse. 
-
-// Steppin' so hard like a German Nazi 
-// Startled by the bases hittin' ground 
-// There's no trippin' on mine, I'm just gettin' down 
-// Sparkamatic, I'm hangin' tight like a fanatic 
-// You trapped me once and I thought that 
-// You might have it 
-// So step down and lend me your ear 
-// '89 in my time! You, '90 is my year. 
-
-// You're weakenin' fast, YO! and I can tell it 
-// Your body's gettin' hot, so, so I can smell it 
-// So don't be mad and don't be sad 
-// 'Cause the lyrics belong to ICE, You can call me Dad 
-// You're pitchin' a fit, so step back and endure 
-// Let the witch doctor, Ice, do the dance to cure 
-// So come up close and don't be square 
-// You wanna battle me -- Anytime, anywhere 
-
-// You thought that I was weak, Boy, you're dead wrong 
-// So come on, everybody and sing this song 
-
-// Say -- Play that funky music Say, go white boy, go white boy go 
-// play that funky music Go white boy, go white boy, go 
-// Lay down and boogie and play that funky music till you die. 
-
-// Play that funky music Come on, Come on, let me hear 
-// Play that funky music white boy you say it, say it 
-// Play that funky music A little louder now 
-// Play that funky music, white boy Come on, Come on, Come on 
-// Play that funky music 
+// Cryptopals Ch. 10:
+// I'm back and I'm ringin' the bell
+// A rockin' on the mike while the fly girls yell
+// In ecstasy in the back of me
+// Well that's my DJ Deshay cuttin' all them Z's
+// Hittin' hard and the girlies goin' crazy
+// Vanilla's on the mike, man I'm not lazy.
+//
+// I'm lettin' my drug kick in
+// It controls my mouth and I begin
+// To just let it flow, let my concepts go
+// My posse's to the side yellin', Go Vanilla Go!
+//
+// Smooth 'cause that's the way I will be
+// And if you don't give a damn, then
+// Why you starin' at me
+// So get off 'cause I control the stage
+// There's no dissin' allowed
+// I'm in my own phase
+// The girlies sa y they love me and that is ok
+// And I can dance better than any kid n' play
+//
+// Stage 2 -- Yea the one ya' wanna listen to
+// It's off my head so let the beat play through
+// So I can funk it up and make it sound good
+// 1-2-3 Yo -- Knock on some wood
+// For good luck, I like my rhymes atrocious
+// Supercalafragilisticexpialidocious
+// I'm an effect and that you can bet
+// I can take a fly girl and make her wet.
+//
+// I'm like Samson -- Samson to Delilah
+// There's no denyin', You can try to hang
+// But you'll keep tryin' to get my style
+// Over and over, practice makes perfect
+// But not if you're a loafer.
+//
+// You'll get nowhere, no place, no time, no girls
+// Soon -- Oh my God, homebody, you probably eat
+// Spaghetti with a spoon! Come on and say it!
+//
+// VIP. Vanilla Ice yep, yep, I'm comin' hard like a rhino
+// Intoxicating so you stagger like a wino
+// So punks stop trying and girl stop cryin'
+// Vanilla Ice is sellin' and you people are buyin'
+// 'Cause why the freaks are jockin' like Crazy Glue
+// Movin' and groovin' trying to sing along
+// All through the ghetto groovin' this here song
+// Now you're amazed by the VIP posse.
+//
+// Steppin' so hard like a German Nazi
+// Startled by the bases hittin' ground
+// There's no trippin' on mine, I'm just gettin' down
+// Sparkamatic, I'm hangin' tight like a fanatic
+// You trapped me once and I thought that
+// You might have it
+// So step down and lend me your ear
+// '89 in my time! You, '90 is my year.
+//
+// You're weakenin' fast, YO! and I can tell it
+// Your body's gettin' hot, so, so I can smell it
+// So don't be mad and don't be sad
+// 'Cause the lyrics belong to ICE, You can call me Dad
+// You're pitchin' a fit, so step back and endure
+// Let the witch doctor, Ice, do the dance to cure
+// So come up close and don't be square
+// You wanna battle me -- Anytime, anywhere
+//
+// You thought that I was weak, Boy, you're dead wrong
+// So come on, everybody and sing this song
+//
+// Say -- Play that funky music Say, go white boy, go white boy go
+// play that funky music Go white boy, go white boy, go
+// Lay down and boogie and play that funky music till you die.
+//
+// Play that funky music Come on, Come on, let me hear
+// Play that funky music white boy you say it, say it
+// Play that funky music A little louder now
+// Play that funky music, white boy Come on, Come on, Come on
+// Play that funky music
 // 
