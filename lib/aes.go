@@ -98,6 +98,20 @@ func aesInvSubBytes(state [][]byte) [][]byte {
 	return state
 }
 
+func aesShiftRows(state [][]byte) [][]byte {
+	n_state := make([][]byte, 4) // New state.
+
+	nb := 4
+	for r := 0; r < 4; r++ {
+		n_state[r] = make([]byte, nb)
+		for c := 0; c < nb; c++ {
+			n_state[r][c] = state[r][(c+r)%nb]
+
+		}
+	}
+	return n_state
+}
+
 func aesInvShiftRows(state [][]byte) [][]byte {
 	n_state := make([][]byte, 4) // New state.
 
