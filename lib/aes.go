@@ -66,6 +66,25 @@ func aesInvCipher(in, ky []byte) []byte {
 	return output
 }
 
+func aesMixColumns(state [][]byte) [][]byte {
+
+	// Initialize new state.
+	n_state := make([][]byte, 4)
+	nb := 4
+	for r := 0; r < 4; r++ {
+		n_state[r] = make([]byte, nb)
+	}
+
+	// Mix columns transformation.
+	for c := 0; c < nb; c++ {
+		n_state[0][c] = GFMultiply(0x02, state[0][c]) ^ GFMultiply(0x03, state[1][c]) ^ state[2][c] ^ state[3][c]
+		n_state[1][c] = state[0][c] ^ GFMultiply(0x02, state[1][c]) ^ GFMultiply(0x03, state[2][c]) ^ state[3][c]
+		n_state[2][c] = state[0][c] ^ state[1][c] ^ GFMultiply(0x02, state[2][c]) ^ GFMultiply(0x03, state[3][c])
+		n_state[3][c] = GFMultiply(0x03, state[0][c]) ^ state[1][c] ^ state[2][c] ^ GFMultiply(0x02, state[3][c])
+	}
+	return n_state
+}
+
 func aesInvMixColumns(state [][]byte) [][]byte {
 
 	// Initialize new state.
