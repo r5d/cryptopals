@@ -90,7 +90,7 @@ func BytesToHexStr(bs []byte) string {
 	hs := ""
 
 	for i := 0; i < len(bs); i++ {
-		hs += " " + ByteToHexStr(bs[i])
+		hs += ByteToHexStr(bs[i])
 	}
 	return hs
 }
