@@ -44,6 +44,25 @@ func HexStrToAsciiStr(h string) string {
 	return a
 }
 
+// 'h' must be hex encoded string.
+func HexStrToBytes(h string) []byte {
+	lh := len(h)
+
+	if lh < 1 {
+		return []byte{}
+	}
+	if lh == 1 {
+		return []byte{byte(HexCharToDec(h[0]))}
+	}
+
+	bs := make([]byte, 0)
+	for i := 0; i < lh; i += 2 {
+		b := HexCharToDec(h[i])<<4 | HexCharToDec(h[i+1])
+		bs = append(bs, byte(b))
+	}
+	return bs
+}
+
 func AsciiStrToHexStr(as string) string {
 	hs := ""
 	if len(as) < 1 {
