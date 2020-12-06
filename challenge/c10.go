@@ -8,6 +8,11 @@ import (
 	"ricketyspace.net/cryptopals/lib"
 )
 
+var plain80038A []byte = lib.HexStrToBytes("6bc1bee22e409f96e93d7e117393172a" +
+	"ae2d8a571e03ac9c9eb76fac45af8e51" +
+	"30c81c46a35ce411e5fbc1191a0a52ef" +
+	"f69f2445df4f9b17ad2b417be66c3710")
+
 var cipher80038A []byte = lib.HexStrToBytes("7649abac8119b246cee98e9b12e9197d" +
 	"5086cb9b507219ee95db113a917678b2" +
 	"73bed6b8e3c1743b7116e69e22229516" +
@@ -93,15 +98,30 @@ func init() {
 }
 
 func C10() {
-	o := lib.AESDecryptCBC(cipher80038A, key80038A, iv80038A)
-	fmt.Printf("NIST SP 800-38A F.2.2:%v\n", lib.BytesToHexStr(o))
+	o := lib.AESEncryptCBC(plain80038A, key80038A, iv80038A)
+	fmt.Printf("NIST SP 800-38A F.2.1:\n%v\n",
+		lib.PrettifyHexStr(lib.BytesToHexStr(o)))
+
+	o = lib.AESDecryptCBC(cipher80038A, key80038A, iv80038A)
+	fmt.Printf("NIST SP 800-38A F.2.2:\n%v\n",
+		lib.PrettifyHexStr(lib.BytesToHexStr(o)))
 
 	o = lib.AESDecryptCBC(cipher10, key10, iv10)
-	fmt.Printf("\nCryptopals Ch. 10:\n%v", lib.BytesToStr(o))
+	fmt.Printf("Cryptopals Ch. 10:\n%v", lib.BytesToStr(o))
 }
 
 // Output:
-// NIST SP 800-38A F.2.2: 6b c1 be e2 2e 40 9f 96 e9 3d 7e 11 73 93 17 2a ae 2d 8a 57 1e 03 ac 9c 9e b7 6f ac 45 af 8e 51 30 c8 1c 46 a3 5c e4 11 e5 fb c1 19 1a 0a 52 ef f6 9f 24 45 df 4f 9b 17 ad 2b 41 7b e6 6c 37 10
+// NIST SP 800-38A F.2.1:
+// 7649abac8119b246cee98e9b12e9197d
+// 5086cb9b507219ee95db113a917678b2
+// 73bed6b8e3c1743b7116e69e22229516
+// 3ff1caa1681fac09120eca307586e1a7
+//
+// NIST SP 800-38A F.2.2:
+// 6bc1bee22e409f96e93d7e117393172a
+// ae2d8a571e03ac9c9eb76fac45af8e51
+// 30c81c46a35ce411e5fbc1191a0a52ef
+// f69f2445df4f9b17ad2b417be66c3710
 //
 // Cryptopals Ch. 10:
 // I'm back and I'm ringin' the bell
