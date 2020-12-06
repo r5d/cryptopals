@@ -85,6 +85,19 @@ func aesInvMixColumns(state [][]byte) [][]byte {
 	return n_state
 }
 
+func aesSubBytes(state [][]byte) [][]byte {
+	nb := 4
+	for r := 0; r < 4; r++ {
+		for c := 0; c < nb; c++ {
+			x := state[r][c] >> 4
+			y := state[r][c] & 0x0f
+
+			state[r][c] = sbox[x][y]
+		}
+	}
+	return state
+}
+
 func aesInvSubBytes(state [][]byte) [][]byte {
 	nb := 4
 	for r := 0; r < 4; r++ {
