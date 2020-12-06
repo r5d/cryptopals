@@ -8,14 +8,14 @@ import (
 	"ricketyspace.net/cryptopals/lib"
 )
 
-var cipher80038A = lib.HexStrToBytes("7649abac8119b246cee98e9b12e9197d" +
+var cipher80038A []byte = lib.HexStrToBytes("7649abac8119b246cee98e9b12e9197d" +
 	"5086cb9b507219ee95db113a917678b2" +
 	"73bed6b8e3c1743b7116e69e22229516" +
 	"3ff1caa1681fac09120eca307586e1a7")
 
-var key80038A = lib.HexStrToBytes("2b7e151628aed2a6abf7158809cf4f3c")
+var key80038A []byte = lib.HexStrToBytes("2b7e151628aed2a6abf7158809cf4f3c")
 
-var iv80038A = lib.HexStrToBytes("000102030405060708090a0b0c0d0e0f")
+var iv80038A []byte = lib.HexStrToBytes("000102030405060708090a0b0c0d0e0f")
 
 var cipher10 []byte = lib.Base64ToBytes(`CRIwqt4+szDbqkNY+I0qbNXPg1XLaCM5etQ5Bt9DRFV/xIN2k8Go7jtArLIy
 P605b071DL8C+FPYSHOXPkMMMFPAKm+Nsu0nCBMQVt9mlluHbVE/yl6VaBCj
