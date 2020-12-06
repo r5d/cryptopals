@@ -17,7 +17,7 @@ var key80038A = lib.HexStrToBytes("2b7e151628aed2a6abf7158809cf4f3c")
 
 var iv80038A = lib.HexStrToBytes("000102030405060708090a0b0c0d0e0f")
 
-var cipher10 string = `CRIwqt4+szDbqkNY+I0qbNXPg1XLaCM5etQ5Bt9DRFV/xIN2k8Go7jtArLIy
+var cipher10 []byte = lib.Base64ToBytes(`CRIwqt4+szDbqkNY+I0qbNXPg1XLaCM5etQ5Bt9DRFV/xIN2k8Go7jtArLIy
 P605b071DL8C+FPYSHOXPkMMMFPAKm+Nsu0nCBMQVt9mlluHbVE/yl6VaBCj
 NuOGvHZ9WYvt51uR/lklZZ0ObqD5UaC1rupZwCEK4pIWf6JQ4pTyPjyiPtKX
 g54FNQvbVIHeotUG2kHEvHGS/w2Tt4E42xEwVfi29J3yp0O/TcL7aoRZIcJj
@@ -80,9 +80,9 @@ YNP+EyWCyLRJ3EcOYdvVwVb+vIiyzxnRdugB3vNzaNljHG5ypEJQaTLphIQn
 lP02xcBpMNJN69bijVtnASN/TLV5ocYvtnWPTBKu3OyOkcflMaHCEUgHPW0f
 mGfld4i9Tu35zrKvTDzfxkJX7+KJ72d/V+ksNKWvwn/wvMOZsa2EEOfdCidm
 oql027IS5XvSHynQtvFmw0HTk9UXt8HdVNTqcdy/jUFmXpXNP2Wvn8PrU2Dh
-kkIzWhQ5Rxd/vnM2QQr9Cxa2J9GXEV3kGDiZV90+PCDSVGY4VgF8y7GedI1h`
+kkIzWhQ5Rxd/vnM2QQr9Cxa2J9GXEV3kGDiZV90+PCDSVGY4VgF8y7GedI1h`)
 
-var key10 = "YELLOW SUBMARINE"
+var key10 []byte = lib.StrToBytes("YELLOW SUBMARINE")
 
 var iv10 []byte = make([]byte, 16)
 
@@ -96,11 +96,7 @@ func C10() {
 	o := lib.AESDecryptCBC(cipher80038A, key80038A, iv80038A)
 	fmt.Printf("NIST SP 800-38A F.2.2:%v\n", lib.BytesToHexStr(o))
 
-	c := lib.Base64ToBytes(cipher10)
-	k := lib.StrToBytes(key10)
-	iv := iv10
-
-	o = lib.AESDecryptCBC(c, k, iv)
+	o = lib.AESDecryptCBC(cipher10, key10, iv10)
 	fmt.Printf("\nCryptopals Ch. 10:\n%v", lib.BytesToStr(o))
 }
 
