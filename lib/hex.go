@@ -94,3 +94,15 @@ func BytesToHexStr(bs []byte) string {
 	}
 	return hs
 }
+
+func PrettifyHexStr(hs string) string {
+	p_hs := ""
+	for i := 0; i < len(hs); i++ {
+		p_hs += string(hs[i])
+
+		if (i+1)%32 == 0 {
+			p_hs += "\n"
+		}
+	}
+	return p_hs
+}
