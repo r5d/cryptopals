@@ -19,7 +19,7 @@ func AESDecryptCBC(cipher, key, iv []byte) []byte {
 	return output
 }
 
-func AESDecrypt(cipher, key []byte) []byte {
+func AESDecryptECB(cipher, key []byte) []byte {
 	iter := len(cipher) / 16
 
 	// Decrypt 16 bytes at a time.

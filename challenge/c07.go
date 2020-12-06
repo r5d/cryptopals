@@ -79,7 +79,7 @@ func C7() {
 	c := lib.Base64ToBytes(cipher07)
 	k := lib.StrToBytes(key07)
 
-	o := lib.AESDecrypt(c, k)
+	o := lib.AESDecryptECB(c, k)
 	fmt.Printf("%v", lib.BytesToStr(o))
 }
 
