@@ -32,6 +32,42 @@ func AESDecryptECB(cipher, key []byte) []byte {
 	return output
 }
 
+
+func aesCipher(in, ky []byte) []byte {
+	nb := 4
+	nr := 10
+
+	// Generate key schedule from key.
+	ks := aesKeyExpansion(ky)
+
+	// Make state from input and do first round key
+	// transformation.
+	state := aesMkState(in)
+	state = aesAddRoundKey(state, ks[0:4])
+
+	for round := 1; round <= nr-1; round++ {
+		state = aesSubBytes(state)
+		state = aesShiftRows(state)
+		state = aesMixColumns(state)
+		state = aesAddRoundKey(state, ks[(round*nb):((round+1)*nb)])
+	}
+	state = aesSubBytes(state)
+	state = aesShiftRows(state)
+	state = aesAddRoundKey(state, ks[(nr*nb):((nr+1)*nb)])
+
+	// Make output.
+	output := make([]byte, 4*nb)
+	i := 0
+	for c := 0; c < nb; c++ {
+		for r := 0; r < 4; r++ {
+			output[i] = state[r][c]
+			i++
+		}
+	}
+
+	return output
+}
+
 func aesInvCipher(in, ky []byte) []byte {
 	nb := 4
 	nr := 10
