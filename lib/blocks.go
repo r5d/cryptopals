@@ -61,6 +61,29 @@ func BlocksEqual(a, b []byte) bool {
 	return true
 }
 
+func BlockIsECB(bs []byte) []byte {
+	blocks := BreakIntoBlocks(bs, 16)
+
+	for i := 0; i < len(blocks); i++ {
+		if hasMatchingBlock(i, blocks) {
+			return blocks[i]
+		}
+	}
+	return nil
+}
+
+func hasMatchingBlock(id int, blocks [][]byte) bool {
+	for i := 0; i < len(blocks); i++ {
+		if i == id {
+			continue
+		}
+		if BlocksEqual(blocks[i], blocks[id]) {
+			return true
+		}
+	}
+	return false
+}
+
 // Performs PKCS#7 Padding on the input `in` and block size `k`.
 // Assumes 0 > `k` < 256
 // Reference: https://tools.ietf.org/html/rfc5652#section-6.3
