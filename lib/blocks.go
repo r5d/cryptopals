@@ -96,3 +96,8 @@ func Pkcs7Padding(in []byte, k int) []byte {
 	}
 	return in
 }
+
+// Removes PKCS#7 Padding from input `in`
+func Pkcs7PaddingUndo(in []byte) []byte {
+	return in[0:(len(in) - int(in[len(in)-1]))]
+}
