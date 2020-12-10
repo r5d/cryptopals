@@ -13,11 +13,6 @@ var plain80038A []byte = lib.HexStrToBytes("6bc1bee22e409f96e93d7e117393172a" +
 	"30c81c46a35ce411e5fbc1191a0a52ef" +
 	"f69f2445df4f9b17ad2b417be66c3710")
 
-var cipher80038A []byte = lib.HexStrToBytes("7649abac8119b246cee98e9b12e9197d" +
-	"5086cb9b507219ee95db113a917678b2" +
-	"73bed6b8e3c1743b7116e69e22229516" +
-	"3ff1caa1681fac09120eca307586e1a7")
-
 var key80038A []byte = lib.HexStrToBytes("2b7e151628aed2a6abf7158809cf4f3c")
 
 var iv80038A []byte = lib.HexStrToBytes("000102030405060708090a0b0c0d0e0f")
@@ -98,11 +93,11 @@ func init() {
 }
 
 func C10() {
-	o := lib.AESEncryptCBC(plain80038A, key80038A, iv80038A)
-	fmt.Printf("NIST SP 800-38A F.2.1:\n%v\n",
-		lib.PrettifyHexStr(lib.BytesToHexStr(o)))
+	cipher80038A := lib.AESEncryptCBC(plain80038A, key80038A, iv80038A)
+	fmt.Printf("NIST SP 800-38A F.2.1 (has padding):\n%v\n",
+		lib.PrettifyHexStr(lib.BytesToHexStr(cipher80038A)))
 
-	o = lib.AESDecryptCBC(cipher80038A, key80038A, iv80038A)
+	o := lib.AESDecryptCBC(cipher80038A, key80038A, iv80038A)
 	fmt.Printf("NIST SP 800-38A F.2.2:\n%v\n",
 		lib.PrettifyHexStr(lib.BytesToHexStr(o)))
 
@@ -111,11 +106,13 @@ func C10() {
 }
 
 // Output:
-// NIST SP 800-38A F.2.1:
+//
+// NIST SP 800-38A F.2.1 (has padding):
 // 7649abac8119b246cee98e9b12e9197d
 // 5086cb9b507219ee95db113a917678b2
 // 73bed6b8e3c1743b7116e69e22229516
 // 3ff1caa1681fac09120eca307586e1a7
+// 8cb82807230e1321d3fae00d18cc2012
 //
 // NIST SP 800-38A F.2.2:
 // 6bc1bee22e409f96e93d7e117393172a
@@ -203,4 +200,3 @@ func C10() {
 // Play that funky music A little louder now
 // Play that funky music, white boy Come on, Come on, Come on
 // Play that funky music
-// 

@@ -4,6 +4,9 @@
 package lib
 
 func AESEncryptCBC(plain, key, iv []byte) []byte {
+	// Pad input
+	plain = Pkcs7Padding(plain, 16)
+
 	iter := len(plain) / 16
 
 	lc := iv
@@ -33,6 +36,10 @@ func AESDecryptCBC(cipher, key, iv []byte) []byte {
 
 		lc = c
 	}
+
+	// Undo padding
+	output = Pkcs7PaddingUndo(output)
+
 	return output
 }
 
