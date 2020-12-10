@@ -37,6 +37,9 @@ func AESDecryptCBC(cipher, key, iv []byte) []byte {
 }
 
 func AESEncryptECB(plain, key []byte) []byte {
+	// Pad input
+	plain = Pkcs7Padding(plain, 16)
+
 	iter := len(plain) / 16
 
 	// Encrypt 16 bytes at a time.
@@ -60,6 +63,10 @@ func AESDecryptECB(cipher, key []byte) []byte {
 		e := (i * 16) + 16
 		output = append(output, aesInvCipher(cipher[s:e], key)...)
 	}
+
+	// Undo padding
+	output = Pkcs7PaddingUndo(output)
+
 	return output
 }
 
