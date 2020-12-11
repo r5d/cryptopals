@@ -38,5 +38,7 @@ func main() {
 		challenge.C9()
 	case 10:
 		challenge.C10()
+	case 11:
+		challenge.C11()
 	}
 }
