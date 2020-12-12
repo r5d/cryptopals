@@ -14,7 +14,7 @@ func C11() {
 
 	for i := 0; i < 10; i++ {
 		o := lib.OracleAESRandomEncrypt(p)
-		if lib.CipherIsECB(o) != nil {
+		if lib.CipherUsesECB(o) != nil {
 			fmt.Printf("%d -> Enciphered with ECB: %v (%d)\n", i, o, len(o))
 		} else {
 			fmt.Printf("%d -> Enciphered with CBC: %v (%d)\n", i, o, len(o))

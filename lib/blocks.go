@@ -61,7 +61,7 @@ func BlocksEqual(a, b []byte) bool {
 	return true
 }
 
-func CipherIsECB(bs []byte) []byte {
+func CipherUsesECB(bs []byte) []byte {
 	blocks := BreakIntoBlocks(bs, 16)
 
 	for i := 0; i < len(blocks); i++ {

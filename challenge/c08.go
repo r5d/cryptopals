@@ -12,7 +12,7 @@ func C8() {
 	for i := 0; i < len(c08); i++ {
 		bs := lib.HexStrToBytes(c08[i])
 
-		block := lib.CipherIsECB(bs)
+		block := lib.CipherUsesECB(bs)
 		if block != nil {
 			fmt.Printf("Cipher at line %d (%s)", i+1, c08[i])
 			fmt.Printf(" might be AES encrypted in ECB mode.\n")
