@@ -40,5 +40,7 @@ func main() {
 		challenge.C10()
 	case 11:
 		challenge.C11()
+	case 12:
+		challenge.C12()
 	}
 }
