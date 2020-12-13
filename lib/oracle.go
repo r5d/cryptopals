@@ -8,6 +8,20 @@ import (
 	"math/big"
 )
 
+var oracleUnknown string = `Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
+aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
+dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
+YnkK`
+
+var oracleKey []byte = make([]byte, 16)
+
+func init() {
+	_, err := rand.Read(oracleKey)
+	if err != nil {
+		panic(err)
+	}
+}
+
 // Given an input `in`, this function AES encrypts `in` using a
 // randomly generate 16-byte key using ECB or CBC mode and returns the
 // cipher.
@@ -43,6 +57,10 @@ func OracleAESRandomEncrypt(in []byte) []byte {
 		out = AESEncryptCBC(in, key, iv)
 	}
 	return out
+}
+
+func OracleAESEncryptECB(in []byte) []byte {
+	return AESEncryptECB(append(in, Base64ToBytes(oracleUnknown)...), oracleKey)
 }
 
 // Randomly generates `min` to `max` bytes.
