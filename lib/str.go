@@ -99,3 +99,20 @@ func NumToStr(n int64) string {
 	return s
 }
 
+func StrSplitAt(c byte, s string) []string {
+	l := make([]string, 0)
+
+	acc := ""
+	for i := 0; i < len(s); i++ {
+		if s[i] == c {
+			l = append(l, acc)
+			acc = ""
+		} else {
+			acc += string(s[i])
+		}
+	}
+	if len(acc) > 0 {
+		l = append(l, acc)
+	}
+	return l
+}
