@@ -90,3 +90,12 @@ func NumToChar(n int64) byte {
 	return 0
 }
 
+func NumToStr(n int64) string {
+	s := ""
+	for n != 0 {
+		s = string(NumToChar(n%10)) + s
+		n /= 10
+	}
+	return s
+}
+
