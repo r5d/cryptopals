@@ -82,3 +82,11 @@ func isAlphaPunch(c byte) bool {
 	}
 	return false
 }
+
+func NumToChar(n int64) byte {
+	if 0 <= n && n <= 9 {
+		return byte(48 + n)
+	}
+	return 0
+}
+
