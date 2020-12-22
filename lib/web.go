@@ -3,9 +3,7 @@
 
 package lib
 
-import (
-	"crypto/rand"
-)
+import "crypto/rand"
 
 type Profile map[string]string
 
