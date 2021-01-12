@@ -84,20 +84,8 @@ func randomInt(min, max int64) int64 {
 
 // Randomly generates `min` to `max` bytes.
 func randomBytes(min, max int64) []byte {
-	var rn *big.Int
-	var err error
-	for {
-		rn, err = rand.Int(rand.Reader, big.NewInt(max+1))
-		if err != nil {
-			panic(err)
-		}
-		if rn.Int64() >= min {
-			break
-		}
-	}
-
-	bs := make([]byte, rn.Int64())
-	_, err = rand.Read(bs)
+	bs := make([]byte, randomInt(min, max))
+	_, err := rand.Read(bs)
 	if err != nil {
 		panic(err)
 	}
