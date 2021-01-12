@@ -63,6 +63,25 @@ func OracleAESEncryptECB(in []byte) []byte {
 	return AESEncryptECB(append(in, Base64ToBytes(oracleUnknown)...), oracleKey)
 }
 
+// Return a random number from range [min, max]
+func randomInt(min, max int64) int64 {
+	if min >= max {
+		panic("randomInt: min cannot be >= max!")
+	}
+
+	var rn *big.Int
+	var err error
+	for {
+		rn, err = rand.Int(rand.Reader, big.NewInt(max+1))
+		if err != nil {
+			panic(err)
+		}
+		if rn.Int64() >= min {
+			return rn.Int64()
+		}
+	}
+}
+
 // Randomly generates `min` to `max` bytes.
 func randomBytes(min, max int64) []byte {
 	var rn *big.Int
