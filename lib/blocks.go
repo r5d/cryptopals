@@ -72,6 +72,20 @@ func CipherUsesECB(bs []byte) []byte {
 	return nil
 }
 
+// Returns (index, found); where `index` is the starting index of the
+// consecutive matching blocks; `index` is -1 when consective matching
+// blocks are not found.
+func HasConsecutiveMatchingBlocks(bs []byte, bsize int) (int, bool) {
+	blocks := BreakIntoBlocks(bs, bsize)
+
+	for i := 0; i < len(blocks)-1; i++ {
+		if BlocksEqual(blocks[i], blocks[i+1]) {
+			return i * bsize, true
+		}
+	}
+	return -1, false
+}
+
 func hasMatchingBlock(id int, blocks [][]byte) bool {
 	for i := 0; i < len(blocks); i++ {
 		if i == id {
