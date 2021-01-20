@@ -61,7 +61,7 @@ func findBlockSize() int {
 func findUnknownStringCharacteristics(blocksize int) (int, int) {
 	in := make([]byte, 0)
 	c_sz := len(lib.OracleAESEncryptECB(in)) // Cipher size
-	nblocks := c_sz / 16                     // number of blocks
+	nblocks := c_sz / blocksize              // number of blocks
 
 	// Figure out ize of unknown string.
 	for {
