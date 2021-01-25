@@ -14,7 +14,7 @@ dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
 YnkK`
 
 var oracleKey []byte = make([]byte, 16)
-var oracleRandom []byte = make([]byte, randomInt(1, 16))
+var oracleRandom []byte = make([]byte, randomInt(1, 4096))
 
 func init() {
 	_, err := rand.Read(oracleKey)
