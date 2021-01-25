@@ -17,7 +17,7 @@ func C12() {
 
 	blocksize := findBlockSize()
 	nbl, us_sz := findUnknownStringCharacteristics(blocksize)
-	in := freshSheepBlock(blocksize)
+	in := freshSheepBytes(blocksize)
 	ds := make([]byte, 0) // deciphered unknown string in bytes
 	for i := 0; i < nbl; i++ {
 		nby := blocksize
@@ -35,9 +35,9 @@ func C12() {
 	fmt.Printf("Unknown String:\n%v", lib.BytesToStr(ds))
 }
 
-func freshSheepBlock(blocksize int) []byte {
-	in := make([]byte, blocksize)
-	for i := 0; i < blocksize; i++ {
+func freshSheepBytes(n int) []byte {
+	in := make([]byte, n)
+	for i := 0; i < n; i++ {
 		in[i] = sheep
 	}
 	return in

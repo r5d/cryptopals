@@ -13,8 +13,8 @@ func C14() {
 	rpl, nrpb, rpo := findRandPrefixLen(blocksize)
 	nbl, us_sz := findUnknownStringNumBlocksLength(
 		rpl, blocksize)
-	in := append(freshSheepBlock(rpo), // random prefix offset
-		freshSheepBlock(blocksize)...)
+	in := append(freshSheepBytes(rpo), // random prefix offset
+		freshSheepBytes(blocksize)...)
 	ds := make([]byte, 0) // deciphered unknown string in bytes
 	for i := 0; i < nbl; i++ {
 		nby := blocksize
@@ -27,7 +27,7 @@ func C14() {
 		}
 		s := 16 * i
 		e := s + 16
-		in = append(freshSheepBlock(rpo), ds[s:e]...)
+		in = append(freshSheepBytes(rpo), ds[s:e]...)
 	}
 	fmt.Printf("Unknown String:\n%v", lib.BytesToStr(ds))
 }
@@ -49,7 +49,7 @@ func findBlockSizeForVarEncryptECB() int {
 
 func findRandPrefixLen(blocksize int) (int, int, int) {
 	// Make two sheep blocks.
-	tsb := append(freshSheepBlock(blocksize), freshSheepBlock(blocksize)...)
+	tsb := append(freshSheepBytes(blocksize), freshSheepBytes(blocksize)...)
 
 	v := []byte{}
 	index := 0
