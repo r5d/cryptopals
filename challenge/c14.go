@@ -126,3 +126,10 @@ func decipherOneByteUS(nrpb, rpo, blocksize, block, n int, in, ds []byte) ([]byt
 	}
 	panic("not found!")
 }
+
+// Output:
+// Unknown String:
+// Rollin' in my 5.0
+// With my rag-top down so my hair can blow
+// The girlies on standby waving just to say hi
+// Did you stop? No, I just drove by
