@@ -23,12 +23,12 @@ func C15() {
 	}
 	fmt.Printf("unpadded ice: %v\n", unpadded_ice)
 
-	// Will fail; commented out.
+	// Will fail and panic
 	// bad_ice := append(ice, []byte{5, 5, 5, 5}...)
 	// fmt.Printf("bad ice: %v\n", bad_ice)
 	// lib.Pkcs7PaddingUndo(bad_ice)
 
-	// Will fail; commented out.
+	// Will fail and panic
 	// evil_ice := append(ice, []byte{1, 2, 3, 4}...)
 	// fmt.Printf("evil ice: %v\n", evil_ice)
 	// lib.Pkcs7PaddingUndo(evil_ice)
