@@ -113,5 +113,14 @@ func Pkcs7Padding(in []byte, k int) []byte {
 
 // Removes PKCS#7 Padding from input `in`
 func Pkcs7PaddingUndo(in []byte) []byte {
-	return in[0:(len(in) - int(in[len(in)-1]))]
+	pd := in[len(in)-1] // padding character
+	pl := int(pd)       // padding length
+
+	// Validate
+	for i := len(in) - 1; i >= len(in)-pl; i-- {
+		if in[i] != pd {
+			panic("input is not pkcs#7 padded!")
+		}
+	}
+	return in[0:(len(in) - pl)]
 }
