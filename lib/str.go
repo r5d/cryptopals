@@ -116,3 +116,15 @@ func StrSplitAt(c byte, s string) []string {
 	}
 	return l
 }
+
+func StrToUpper(s string) string {
+	us := ""
+	for i := 0; i < len(s); i++ {
+		if 'a' <= s[i] && s[i] <= 'z' {
+			us += string('A' + (s[i] - 'a'))
+		} else {
+			us += string(s[i])
+		}
+	}
+	return us
+}
