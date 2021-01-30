@@ -131,3 +131,13 @@ func StrToUpper(s string) string {
 	}
 	return us
 }
+
+// Returns true if string 's' has string 'n' in it.
+func StrHas(s, n string) bool {
+	for i := 0; i < len(s); i++ {
+		if s[i:i+len(n)] == n {
+			return true
+		}
+	}
+	return false
+}
