@@ -51,6 +51,9 @@ func StripSpaceChars(s string) string {
 		if s[i] == '\n' {
 			continue
 		}
+		if s[i] == 0 { // NUL character
+			continue
+		}
 		ss += string(s[i])
 	}
 	return ss
