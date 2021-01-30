@@ -32,7 +32,7 @@ func WebParseKeyValue(encoded string) map[string]string {
 	kvs := StrSplitAt('&', encoded)
 	for i := 0; i < len(kvs); i++ {
 		kv := StrSplitAt('=', kvs[i])
-		m[stripSpaceChars(kv[0])] = kv[1]
+		m[StripSpaceChars(kv[0])] = kv[1]
 	}
 	return m
 }

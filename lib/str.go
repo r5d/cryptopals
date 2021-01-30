@@ -42,7 +42,7 @@ func BytesToStr(bs []byte) string {
 }
 
 // Strip space and newline characters from string.
-func stripSpaceChars(s string) string {
+func StripSpaceChars(s string) string {
 	ss := ""
 	for i := 0; i < len(s); i++ {
 		if s[i] == ' ' {

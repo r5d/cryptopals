@@ -20,7 +20,7 @@ func HexToBase64(hex string) string {
 }
 
 func Base64ToBytes(enc string) []byte {
-	enc = stripSpaceChars(enc)
+	enc = StripSpaceChars(enc)
 
 	l := len(enc)
 	bs := make([]byte, 3*(l/4))
