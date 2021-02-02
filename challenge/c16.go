@@ -27,26 +27,23 @@ func init() {
 func C16() {
 	s := ";admin=true"
 	c := cbcBitFlipEncrypt(s)
-	d := lib.AESDecryptCBC(c, cbcBitFlipKey, cbcBitFlipIV)
-	fmt.Printf("Cipher for '%v': %v\n", s, c)
-	fmt.Printf("Cipher decrypts to: %v == '%v'\n", d, lib.BytesToStr(d))
+	fmt.Printf("Original Cipher: %v\n", c)
 
 	// Bitflip Attack
 	cc := make([]byte, len(c))
 	for i := 0; i < len(c)-(16*2)-1; i++ {
 		copy(cc, c)
 
-		cc[i+0] = cbcGetFlipByte(i, 0, c)
-		cc[i+1] = cbcGetFlipByte(i+1, 0, c)
-		cc[i+2] = cbcGetFlipByte(i+2, 59, c)
-		cc[i+(8+0)] = cbcGetFlipByte(i+(8+0), 0, c)
-		cc[i+(8+1)] = cbcGetFlipByte(i+(8+1), 0, c)
-		cc[i+(8+2)] = cbcGetFlipByte(i+(8+2), 61, c)
+		// Assuming position i is the start of '%3Badmin%3Dtrue'
+		cc[i+0] = cbcGetFlipByte('%', 0, c[i+0])          // 0 => NUL
+		cc[i+1] = cbcGetFlipByte('3', 0, c[i+1])          // 0 => NUL
+		cc[i+2] = cbcGetFlipByte('B', 59, cc[i+2])        // 59 => ;
+		cc[i+(8+0)] = cbcGetFlipByte('%', 0, c[i+(8+0)])  // 0 => NUL
+		cc[i+(8+1)] = cbcGetFlipByte('3', 0, c[i+(8+1)])  // 0 => NUL
+		cc[i+(8+2)] = cbcGetFlipByte('D', 61, c[i+(8+2)]) // 61 => =
 
 		if cbcBitFlipDecryptHasAdmin(cc) {
-			dc := lib.AESDecryptCBC(cc, cbcBitFlipKey, cbcBitFlipIV)
-			fmt.Printf("Modified cipher: %v\n", cc)
-			fmt.Printf("Modified cipher decrypts to: %v == '%v'\n", dc, lib.BytesToStr(dc))
+			fmt.Printf("Modified cipher: %v has ';admin=true;'\n", cc)
 			return
 		}
 	}
@@ -95,26 +92,13 @@ func cbcBitFlipQuote(s string) string {
 	return qs
 }
 
-// Figure out the byte that translates to target byte `t` at position
-// `p+16` in the cipher `c`.
-func cbcGetFlipByte(p int, t byte, c []byte) byte {
-	cc := make([]byte, len(c))
-	copy(cc, c)
-
-	for i := 0; i < 256; i++ {
-		// Flip a byte in the cipher.
-		cc[p] = byte(i)
-
-		dc := lib.AESDecryptCBC(cc, cbcBitFlipKey, cbcBitFlipIV)
-		if dc[p+16] == t {
-			return byte(i)
-		}
-	}
-	panic("flip byte not found!")
+// Figure out the byte that translates to target byte `t` for cipher
+// byte `c` assuming the plain text byte at that position is `p`.
+func cbcGetFlipByte(p, t, c byte) byte {
+	io := p ^ c // intermediate output (io) byte
+	return t ^ io
 }
 
 // Output:
-// Cipher for ';admin=true': [255 28 49 204 17 8 217 219 157 134 137 122 183 114 228 2 102 21 1 101 7 150 7 113 217 139 168 112 72 208 228 10 99 124 250 204 142 192 141 237 142 100 131 14 3 99 112 3 48 141 173 245 1 130 222 110 237 114 248 141 145 118 239 14 231 52 125 140 58 233 128 228 58 195 107 141 196 39 108 5 130 119 120 91 71 66 161 37 172 158 196 5 67 226 35 137]
-// Cipher decrypts to: [99 111 109 109 101 110 116 49 61 99 111 111 107 105 110 103 37 50 48 77 67 115 59 117 115 101 114 100 97 116 97 61 37 51 66 97 100 109 105 110 37 51 68 116 114 117 101 59 99 111 109 109 101 110 116 50 61 37 50 48 108 105 107 101 37 50 48 97 37 50 48 112 111 117 110 100 37 50 48 111 102 37 50 48 98 97 99 111 110] == 'comment1=cooking%20MCs;userdata=%3Badmin%3Dtrue;comment2=%20like%20a%20pound%20of%20bacon'
-// Modified cipher: [255 28 49 204 17 8 217 219 157 134 137 122 183 114 228 2 67 38 120 101 7 150 7 113 252 184 209 112 72 208 228 10 99 124 250 204 142 192 141 237 142 100 131 14 3 99 112 3 48 141 173 245 1 130 222 110 237 114 248 141 145 118 239 14 231 52 125 140 58 233 128 228 58 195 107 141 196 39 108 5 130 119 120 91 71 66 161 37 172 158 196 5 67 226 35 137]
-// Modified cipher decrypts to: [99 111 109 109 101 110 116 49 61 99 111 111 107 105 110 103 39 147 68 128 41 248 225 42 92 25 53 219 59 222 53 100 0 0 59 97 100 109 105 110 0 0 61 116 114 117 101 59 99 111 109 109 101 110 116 50 61 37 50 48 108 105 107 101 37 50 48 97 37 50 48 112 111 117 110 100 37 50 48 111 102 37 50 48 98 97 99 111 110] == 'comment1=cooking'D)øá*\5Û;Þ5d;admin=true;comment2=%20like%20a%20pound%20of%20bacon'
+// Original Cipher: [18 227 203 76 201 225 61 211 210 75 210 131 101 134 52 68 63 93 34 217 140 103 69 179 175 140 243 88 200 210 29 153 225 201 56 174 159 246 159 32 75 234 203 115 144 56 108 102 60 215 232 204 192 90 54 80 81 119 202 171 27 117 58 102 5 54 72 102 149 132 143 17 198 127 164 117 41 211 56 142 114 185 200 68 33 239 39 188 38 22 14 108 226 223 158 221]
+// Modified cipher: [18 227 203 76 201 225 61 211 210 75 210 131 101 134 52 68 26 110 91 217 140 103 69 179 138 191 138 88 200 210 29 153 225 201 56 174 159 246 159 32 75 234 203 115 144 56 108 102 60 215 232 204 192 90 54 80 81 119 202 171 27 117 58 102 5 54 72 102 149 132 143 17 198 127 164 117 41 211 56 142 114 185 200 68 33 239 39 188 38 22 14 108 226 223 158 221] has ';admin=true;'
