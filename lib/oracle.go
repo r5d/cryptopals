@@ -14,7 +14,7 @@ dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
 YnkK`
 
 var oracleKey []byte = make([]byte, 16)
-var oracleRandom []byte = make([]byte, randomInt(1, 4096))
+var oracleRandom []byte = make([]byte, RandomInt(1, 4096))
 
 func init() {
 	_, err := rand.Read(oracleKey)
@@ -76,9 +76,9 @@ func OracleAESVarEncryptECB(in []byte) []byte {
 }
 
 // Return a random number from range [min, max]
-func randomInt(min, max int64) int64 {
+func RandomInt(min, max int64) int64 {
 	if min >= max {
-		panic("randomInt: min cannot be >= max!")
+		panic("RandomInt: min cannot be >= max!")
 	}
 
 	var rn *big.Int
@@ -96,7 +96,7 @@ func randomInt(min, max int64) int64 {
 
 // Randomly generates `min` to `max` bytes.
 func randomBytes(min, max int64) []byte {
-	bs := make([]byte, randomInt(min, max))
+	bs := make([]byte, RandomInt(min, max))
 	_, err := rand.Read(bs)
 	if err != nil {
 		panic(err)
