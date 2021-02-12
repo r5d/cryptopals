@@ -60,7 +60,7 @@ func cbcBitFlipEncrypt(s string) []byte {
 }
 
 func cbcBitFlipDecryptHasAdmin(c []byte) bool {
-	b := lib.AESDecryptCBC(c, cbcBitFlipKey, cbcBitFlipIV)
+	b, _ := lib.AESDecryptCBC(c, cbcBitFlipKey, cbcBitFlipIV)
 	s := lib.BytesToStr(b)
 
 	// Convert to a map

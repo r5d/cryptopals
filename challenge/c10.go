@@ -97,11 +97,11 @@ func C10() {
 	fmt.Printf("NIST SP 800-38A F.2.1 (has padding):\n%v\n",
 		lib.PrettifyHexStr(lib.BytesToHexStr(cipher80038A)))
 
-	o := lib.AESDecryptCBC(cipher80038A, key80038A, iv80038A)
+	o, _ := lib.AESDecryptCBC(cipher80038A, key80038A, iv80038A)
 	fmt.Printf("NIST SP 800-38A F.2.2:\n%v\n",
 		lib.PrettifyHexStr(lib.BytesToHexStr(o)))
 
-	o = lib.AESDecryptCBC(cipher10, key10, iv10)
+	o, _ = lib.AESDecryptCBC(cipher10, key10, iv10)
 	fmt.Printf("Cryptopals Ch. 10:\n%v", lib.BytesToStr(o))
 }
 

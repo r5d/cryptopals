@@ -23,7 +23,7 @@ func AESEncryptCBC(plain, key, iv []byte) []byte {
 	return output
 }
 
-func AESDecryptCBC(cipher, key, iv []byte) []byte {
+func AESDecryptCBC(cipher, key, iv []byte) ([]byte, error) {
 	iter := len(cipher) / 16
 
 	lc := iv
@@ -38,9 +38,9 @@ func AESDecryptCBC(cipher, key, iv []byte) []byte {
 	}
 
 	// Undo padding
-	output = Pkcs7PaddingUndo(output)
+	output, err := Pkcs7PaddingUndo(output)
 
-	return output
+	return output, err
 }
 
 func AESEncryptECB(plain, key []byte) []byte {
@@ -72,7 +72,7 @@ func AESDecryptECB(cipher, key []byte) []byte {
 	}
 
 	// Undo padding
-	output = Pkcs7PaddingUndo(output)
+	output, _ = Pkcs7PaddingUndo(output)
 
 	return output
 }
