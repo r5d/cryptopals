@@ -13,11 +13,11 @@ aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
 dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
 YnkK`
 
-var oracleKey []byte = make([]byte, 16)
+var OracleKey []byte = make([]byte, 16)
 var oracleRandom []byte = make([]byte, RandomInt(1, 4096))
 
 func init() {
-	_, err := rand.Read(oracleKey)
+	_, err := rand.Read(OracleKey)
 	if err != nil {
 		panic(err)
 	}
@@ -66,13 +66,13 @@ func OracleAESRandomEncrypt(in []byte) []byte {
 }
 
 func OracleAESEncryptECB(in []byte) []byte {
-	return AESEncryptECB(append(in, Base64ToBytes(oracleUnknown)...), oracleKey)
+	return AESEncryptECB(append(in, Base64ToBytes(oracleUnknown)...), OracleKey)
 }
 
 func OracleAESVarEncryptECB(in []byte) []byte {
 	in = append(oracleRandom, in...)
 	in = append(in, Base64ToBytes(oracleUnknown)...)
-	return AESEncryptECB(in, oracleKey)
+	return AESEncryptECB(in, OracleKey)
 }
 
 // Return a random number from range [min, max]
