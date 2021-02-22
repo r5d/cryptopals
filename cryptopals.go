@@ -5,6 +5,7 @@ package main
 
 import (
 	"flag"
+
 	"ricketyspace.net/cryptopals/challenge"
 )
 
@@ -50,5 +51,7 @@ func main() {
 		challenge.C15()
 	case 16:
 		challenge.C16()
+	case 17:
+		challenge.C17()
 	}
 }
