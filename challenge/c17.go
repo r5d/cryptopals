@@ -182,3 +182,4 @@ func C17() {
 // 000006And a high hat with a souped up tempo
 // 000006And a high hat with a souped up tempo
 // 000009ith my rag-top down so my hair can blow
+// ^C
