@@ -14,10 +14,16 @@ dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
 YnkK`
 
 var OracleKey []byte = make([]byte, 16)
+var OracleIV []byte = make([]byte, 16)
 var oracleRandom []byte = make([]byte, RandomInt(1, 4096))
 
 func init() {
 	_, err := rand.Read(OracleKey)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = rand.Read(OracleIV)
 	if err != nil {
 		panic(err)
 	}
