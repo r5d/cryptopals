@@ -3,16 +3,16 @@
 
 package lib
 
-import "crypto/rand"
-
 type Profile map[string]string
 
-var webSessionEncryptionKey []byte = make([]byte, 16)
+var webSessionEncryptionKey []byte
 var webUidCounter int64
 var webUserProfiles map[string]Profile = make(map[string]Profile, 0)
 
 func init() {
-	_, err := rand.Read(webSessionEncryptionKey)
+	var err error
+
+	webSessionEncryptionKey, err = RandomBytes(16)
 	if err != nil {
 		panic(err)
 	}
