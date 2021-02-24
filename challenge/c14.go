@@ -5,8 +5,11 @@ package challenge
 
 import (
 	"fmt"
+
 	"ricketyspace.net/cryptopals/lib"
 )
+
+var sheep byte = 65
 
 func C14() {
 	blocksize := findBlockSizeForVarEncryptECB()
@@ -30,6 +33,14 @@ func C14() {
 		in = append(freshSheepBytes(rpo), ds[s:e]...)
 	}
 	fmt.Printf("Unknown String:\n%v", lib.BytesToStr(ds))
+}
+
+func freshSheepBytes(n int) []byte {
+	in := make([]byte, n)
+	for i := 0; i < n; i++ {
+		in[i] = sheep
+	}
+	return in
 }
 
 func findBlockSizeForVarEncryptECB() int {
