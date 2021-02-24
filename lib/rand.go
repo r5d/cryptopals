@@ -27,7 +27,7 @@ func RandomInt(min, max int64) int64 {
 	}
 }
 
-func RandomKey(size int) ([]byte, error) {
+func RandomBytes(size int) ([]byte, error) {
 	k := make([]byte, size)
 	_, err := rand.Read(k)
 	if err != nil {

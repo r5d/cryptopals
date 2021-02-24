@@ -14,12 +14,12 @@ var oracleRandom []byte
 func init() {
 	var err error
 
-	oracleKey, err = RandomKey(16)
+	oracleKey, err = RandomBytes(16)
 	if err != nil {
 		panic(err)
 	}
 
-	oracleRandom, err = RandomKey(int(RandomInt(1, 4096)))
+	oracleRandom, err = RandomBytes(int(RandomInt(1, 4096)))
 	if err != nil {
 		panic(err)
 	}
@@ -30,12 +30,12 @@ func init() {
 // cipher.
 func OracleAESRandomEncrypt(in []byte) []byte {
 	// Generate random key.
-	key, err := RandomKey(16)
+	key, err := RandomBytes(16)
 	if err != nil {
 		panic(err)
 	}
 	// Generate random initialization vector; needed for AES CBC.
-	iv, err := RandomKey(16)
+	iv, err := RandomBytes(16)
 	if err != nil {
 		panic(err)
 	}

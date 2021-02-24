@@ -11,7 +11,7 @@ import (
 
 // Cryptopals #17 - CBC padding oracle attack
 func C17() {
-	key, err := lib.RandomKey(16)
+	key, err := lib.RandomBytes(16)
 	if err != nil {
 		fmt.Printf("key generation: error: %v\n", err)
 	}
@@ -31,7 +31,7 @@ func C17() {
 		r := lib.RandomInt(0, int64(len(cookies)-1))
 		p := lib.Base64ToBytes(cookies[r])
 		k := key
-		iv, err := lib.RandomKey(16)
+		iv, err := lib.RandomBytes(16)
 		if err != nil {
 			fmt.Printf("iv generation: error: %v\n", err)
 		}
