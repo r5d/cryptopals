@@ -29,7 +29,7 @@ func crack(bs []byte, ks int) (string, string) {
 	blocks := lib.BreakIntoBlocks(bs, ks)
 	blocks = lib.TransposeBlocks(blocks, ks)
 
-	key = ""
+	key := ""
 	for i := 0; i < len(blocks); i++ {
 		k := findKey(blocks[i])
 
