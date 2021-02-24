@@ -5,19 +5,12 @@ package challenge
 
 import (
 	"fmt"
+
 	"ricketyspace.net/cryptopals/lib"
 )
 
-var plain80038A []byte = lib.HexStrToBytes("6bc1bee22e409f96e93d7e117393172a" +
-	"ae2d8a571e03ac9c9eb76fac45af8e51" +
-	"30c81c46a35ce411e5fbc1191a0a52ef" +
-	"f69f2445df4f9b17ad2b417be66c3710")
-
-var key80038A []byte = lib.HexStrToBytes("2b7e151628aed2a6abf7158809cf4f3c")
-
-var iv80038A []byte = lib.HexStrToBytes("000102030405060708090a0b0c0d0e0f")
-
-var cipher10 []byte = lib.Base64ToBytes(`CRIwqt4+szDbqkNY+I0qbNXPg1XLaCM5etQ5Bt9DRFV/xIN2k8Go7jtArLIy
+func C10() {
+	cipher := lib.Base64ToBytes(`CRIwqt4+szDbqkNY+I0qbNXPg1XLaCM5etQ5Bt9DRFV/xIN2k8Go7jtArLIy
 P605b071DL8C+FPYSHOXPkMMMFPAKm+Nsu0nCBMQVt9mlluHbVE/yl6VaBCj
 NuOGvHZ9WYvt51uR/lklZZ0ObqD5UaC1rupZwCEK4pIWf6JQ4pTyPjyiPtKX
 g54FNQvbVIHeotUG2kHEvHGS/w2Tt4E42xEwVfi29J3yp0O/TcL7aoRZIcJj
@@ -81,18 +74,15 @@ lP02xcBpMNJN69bijVtnASN/TLV5ocYvtnWPTBKu3OyOkcflMaHCEUgHPW0f
 mGfld4i9Tu35zrKvTDzfxkJX7+KJ72d/V+ksNKWvwn/wvMOZsa2EEOfdCidm
 oql027IS5XvSHynQtvFmw0HTk9UXt8HdVNTqcdy/jUFmXpXNP2Wvn8PrU2Dh
 kkIzWhQ5Rxd/vnM2QQr9Cxa2J9GXEV3kGDiZV90+PCDSVGY4VgF8y7GedI1h`)
+	var key []byte = lib.StrToBytes("YELLOW SUBMARINE")
+	var iv []byte = make([]byte, 16)
+	plain80038A := lib.HexStrToBytes("6bc1bee22e409f96e93d7e117393172a" +
+		"ae2d8a571e03ac9c9eb76fac45af8e51" +
+		"30c81c46a35ce411e5fbc1191a0a52ef" +
+		"f69f2445df4f9b17ad2b417be66c3710")
+	key80038A := lib.HexStrToBytes("2b7e151628aed2a6abf7158809cf4f3c")
+	iv80038A := lib.HexStrToBytes("000102030405060708090a0b0c0d0e0f")
 
-var key10 []byte = lib.StrToBytes("YELLOW SUBMARINE")
-
-var iv10 []byte = make([]byte, 16)
-
-func init() {
-	for i := 0; i < 16; i++ {
-		iv10[i] = 0x00
-	}
-}
-
-func C10() {
 	cipher80038A := lib.AESEncryptCBC(plain80038A, key80038A, iv80038A)
 	fmt.Printf("NIST SP 800-38A F.2.1 (has padding):\n%v\n",
 		lib.PrettifyHexStr(lib.BytesToHexStr(cipher80038A)))
@@ -101,7 +91,7 @@ func C10() {
 	fmt.Printf("NIST SP 800-38A F.2.2:\n%v\n",
 		lib.PrettifyHexStr(lib.BytesToHexStr(o)))
 
-	o, _ = lib.AESDecryptCBC(cipher10, key10, iv10)
+	o, _ = lib.AESDecryptCBC(cipher, key, iv)
 	fmt.Printf("Cryptopals Ch. 10:\n%v", lib.BytesToStr(o))
 }
 
