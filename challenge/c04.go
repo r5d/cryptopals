@@ -5,45 +5,12 @@ package challenge
 
 import (
 	"fmt"
+
 	"ricketyspace.net/cryptopals/lib"
 )
 
 func C4() {
-	i, k, ds, scr := 0, byte(0), "", 100.0
-	for j := 0; j < len(blobs); j++ {
-		c, as, s := lib.XORCrackSingleKey(blobs[j])
-		if s < scr {
-			i = j
-			k = c
-			ds = as
-			scr = s
-		}
-	}
-	fmt.Printf("Blob encrypted with a single character: %v\n", blobs[i])
-	fmt.Printf("Key is '%c'\n", k)
-	fmt.Printf("Decrypted string: '%v' (Score: %v)\n", ds, scr)
-}
-
-// Output:
-//
-// Blob encrypted with a single character: 7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f
-// Key is '5'
-// Decrypted string: 'Now that the party is jumping
-// ' (Score: 0.05999999999999994)
-
-func init() {
-	for i, j := 1, 0; i < len(blob); i++ {
-		if blob[i] == '\n' {
-			j += 1
-			i += 1
-		}
-		blobs[j] += string(blob[i])
-	}
-}
-
-var blobs = make([]string, 327)
-
-const blob = `
+	const blob = `
 0e3647e8592d35514a081243582536ed3de6734059001e3f535ce6271032
 334b041de124f73c18011a50e608097ac308ecee501337ec3e100854201d
 40e127f51c10031d0133590b1e490f3514e05a54143d08222c2a4071e351
@@ -371,3 +338,33 @@ e03555453d1e31775f37331823164c341c09e310463438481019fb0b12fa
 41053f5cef5f6f56e4f5410a5407281600200b2649460a2e3a3c38492a0c
 4c071a57e9356ee415103c5c53e254063f2019340969e30a2e381d5b2555
 32042f46431d2c44607934ed180c1028136a5f2b26092e3b2c4e2930585a`
+	blobs := make([]string, 327)
+	for i, j := 1, 0; i < len(blob); i++ {
+		if blob[i] == '\n' {
+			j += 1
+			i += 1
+		}
+		blobs[j] += string(blob[i])
+	}
+
+	i, k, ds, scr := 0, byte(0), "", 100.0
+	for j := 0; j < len(blobs); j++ {
+		c, as, s := lib.XORCrackSingleKey(blobs[j])
+		if s < scr {
+			i = j
+			k = c
+			ds = as
+			scr = s
+		}
+	}
+	fmt.Printf("Blob encrypted with a single character: %v\n", blobs[i])
+	fmt.Printf("Key is '%c'\n", k)
+	fmt.Printf("Decrypted string: '%v' (Score: %v)\n", ds, scr)
+}
+
+// Output:
+//
+// Blob encrypted with a single character: 7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f
+// Key is '5'
+// Decrypted string: 'Now that the party is jumping
+// ' (Score: 0.05999999999999994)
