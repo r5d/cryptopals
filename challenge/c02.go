@@ -5,6 +5,7 @@ package challenge
 
 import (
 	"fmt"
+
 	"ricketyspace.net/cryptopals/lib"
 )
 
