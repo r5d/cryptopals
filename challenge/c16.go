@@ -6,27 +6,65 @@ package challenge
 import (
 	"crypto/rand"
 	"fmt"
+
 	"ricketyspace.net/cryptopals/lib"
 )
 
-var cbcBitFlipKey []byte = make([]byte, 16)
-var cbcBitFlipIV []byte = make([]byte, 16)
-
-func init() {
-	_, err := rand.Read(cbcBitFlipKey)
-	if err != nil {
-		panic(err)
-	}
-
-	// Initialization vector for CBC encryption.
-	for i := 0; i < len(cbcBitFlipIV); i++ {
-		cbcBitFlipIV[i] = '0'
-	}
-}
-
 func C16() {
+	key := make([]byte, 16)
+	_, err := rand.Read(key)
+	if err != nil {
+		fmt.Printf("bit flip key: error: %v", err)
+	}
+	iv := make([]byte, 16)
+	quote := func(s string) string {
+		qs := ""
+		for i := 0; i < len(s); i++ {
+			if s[i] == ';' || s[i] == '=' {
+				qs += "%" + lib.StrToUpper(lib.ByteToHexStr(s[i]))
+			} else {
+				qs += string(s[i])
+			}
+		}
+		return qs
+	}
+	encrypt := func(s string) []byte {
+		in_s := "comment1=cooking%20MCs;userdata="
+		in_s += quote(s)
+		in_s += ";comment2=%20like%20a%20pound%20of%20bacon"
+
+		return lib.AESEncryptCBC(lib.StrToBytes(in_s), key,
+			iv)
+	}
+	decryptHasAdmin := func(c []byte) bool {
+		b, _ := lib.AESDecryptCBC(c, key, iv)
+		s := lib.BytesToStr(b)
+
+		// Convert to a map
+		m := make(map[string]string, 0)
+		for _, r := range lib.StrSplitAt(';', s) {
+			kv := lib.StrSplitAt('=', r)
+			if len(kv) != 2 {
+				continue // ignore
+			}
+			kv[0] = lib.StripSpaceChars(kv[0])
+			kv[1] = lib.StripSpaceChars(kv[1])
+			m[kv[0]] = kv[1]
+		}
+		if _, ok := m["admin"]; ok && lib.StrHas(m["admin"], "true") {
+			return true
+		}
+		return false
+	}
+	// Figure out the byte that translates to target byte `t` for cipher
+	// byte `c` assuming the plain text byte at that position is `p`.
+	flipByte := func(p, t, c byte) byte {
+		io := p ^ c // intermediate output (io) byte
+		return t ^ io
+	}
+
 	s := ";admin=true"
-	c := cbcBitFlipEncrypt(s)
+	c := encrypt(s)
 	fmt.Printf("Original Cipher: %v\n", c)
 
 	// Bitflip Attack
@@ -35,68 +73,19 @@ func C16() {
 		copy(cc, c)
 
 		// Assuming position i is the start of '%3Badmin%3Dtrue'
-		cc[i+0] = cbcGetFlipByte('%', 0, c[i+0])          // 0 => NUL
-		cc[i+1] = cbcGetFlipByte('3', 0, c[i+1])          // 0 => NUL
-		cc[i+2] = cbcGetFlipByte('B', 59, cc[i+2])        // 59 => ;
-		cc[i+(8+0)] = cbcGetFlipByte('%', 0, c[i+(8+0)])  // 0 => NUL
-		cc[i+(8+1)] = cbcGetFlipByte('3', 0, c[i+(8+1)])  // 0 => NUL
-		cc[i+(8+2)] = cbcGetFlipByte('D', 61, c[i+(8+2)]) // 61 => =
+		cc[i+0] = flipByte('%', 0, c[i+0])          // 0 => NUL
+		cc[i+1] = flipByte('3', 0, c[i+1])          // 0 => NUL
+		cc[i+2] = flipByte('B', 59, cc[i+2])        // 59 => ;
+		cc[i+(8+0)] = flipByte('%', 0, c[i+(8+0)])  // 0 => NUL
+		cc[i+(8+1)] = flipByte('3', 0, c[i+(8+1)])  // 0 => NUL
+		cc[i+(8+2)] = flipByte('D', 61, c[i+(8+2)]) // 61 => =
 
-		if cbcBitFlipDecryptHasAdmin(cc) {
+		if decryptHasAdmin(cc) {
 			fmt.Printf("Modified cipher: %v has ';admin=true;'\n", cc)
 			return
 		}
 	}
 	fmt.Printf("Bitflip Attack failed!\n")
-}
-
-func cbcBitFlipEncrypt(s string) []byte {
-	in_s := "comment1=cooking%20MCs;userdata="
-	in_s += cbcBitFlipQuote(s)
-	in_s += ";comment2=%20like%20a%20pound%20of%20bacon"
-
-	return lib.AESEncryptCBC(lib.StrToBytes(in_s), cbcBitFlipKey,
-		cbcBitFlipIV)
-}
-
-func cbcBitFlipDecryptHasAdmin(c []byte) bool {
-	b, _ := lib.AESDecryptCBC(c, cbcBitFlipKey, cbcBitFlipIV)
-	s := lib.BytesToStr(b)
-
-	// Convert to a map
-	m := make(map[string]string, 0)
-	for _, r := range lib.StrSplitAt(';', s) {
-		kv := lib.StrSplitAt('=', r)
-		if len(kv) != 2 {
-			continue // ignore
-		}
-		kv[0] = lib.StripSpaceChars(kv[0])
-		kv[1] = lib.StripSpaceChars(kv[1])
-		m[kv[0]] = kv[1]
-	}
-	if _, ok := m["admin"]; ok && lib.StrHas(m["admin"], "true") {
-		return true
-	}
-	return false
-}
-
-func cbcBitFlipQuote(s string) string {
-	qs := ""
-	for i := 0; i < len(s); i++ {
-		if s[i] == ';' || s[i] == '=' {
-			qs += "%" + lib.StrToUpper(lib.ByteToHexStr(s[i]))
-		} else {
-			qs += string(s[i])
-		}
-	}
-	return qs
-}
-
-// Figure out the byte that translates to target byte `t` for cipher
-// byte `c` assuming the plain text byte at that position is `p`.
-func cbcGetFlipByte(p, t, c byte) byte {
-	io := p ^ c // intermediate output (io) byte
-	return t ^ io
 }
 
 // Output:
