@@ -5,10 +5,12 @@ package challenge
 
 import (
 	"fmt"
+
 	"ricketyspace.net/cryptopals/lib"
 )
 
-var cipher07 string = `CRIwqt4+szDbqkNY+I0qbDe3LQz0wiw0SuxBQtAM5TDdMbjCMD/venUDW9BL
+func C7() {
+	cipher := `CRIwqt4+szDbqkNY+I0qbDe3LQz0wiw0SuxBQtAM5TDdMbjCMD/venUDW9BL
 PEXODbk6a48oMbAY6DDZsuLbc0uR9cp9hQ0QQGATyyCESq2NSsvhx5zKlLtz
 dsnfK5ED5srKjK7Fz4Q38/ttd+stL/9WnDzlJvAo7WBsjI5YJc2gmAYayNfm
 CW2lhZE/ZLG0CBD2aPw0W417QYb4cAIOW92jYRiJ4PTsBBHDe8o4JwqaUac6
@@ -72,12 +74,10 @@ RA3PIfmvGfMUGFVWlyS7+O73l5oIJHxuaJrR4EenzAu4Avpa5d+VuiYbM10a
 LaVegVPvFn4pCP4U/Nbbw4OTCFX2HKmWEiVBB0O3J9xwXWpxN1Vr5CDi75Fq
 NhxYCjgSJzWOUD34Y1dAfcj57VINmQVEWyc8Tch8vg9MnHGCOfOjRqp0VGyA
 S15AVD2QS1V6fhRimJSVyT6QuGb8tKRsl2N+a2Xze36vgMhw7XK7zh//jC2H`
+	key := "YELLOW SUBMARINE"
 
-var key07 = "YELLOW SUBMARINE"
-
-func C7() {
-	c := lib.Base64ToBytes(cipher07)
-	k := lib.StrToBytes(key07)
+	c := lib.Base64ToBytes(cipher)
+	k := lib.StrToBytes(key)
 
 	o := lib.AESDecryptECB(c, k)
 	fmt.Printf("%v", lib.BytesToStr(o))
