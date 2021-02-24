@@ -8,19 +8,13 @@ aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
 dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
 YnkK`
 
-var OracleKey []byte
-var OracleIV []byte
+var oracleKey []byte
 var oracleRandom []byte
 
 func init() {
 	var err error
 
-	OracleKey, err = RandomKey(16)
-	if err != nil {
-		panic(err)
-	}
-
-	OracleIV, err = RandomKey(16)
+	oracleKey, err = RandomKey(16)
 	if err != nil {
 		panic(err)
 	}
@@ -64,11 +58,11 @@ func OracleAESRandomEncrypt(in []byte) []byte {
 }
 
 func OracleAESEncryptECB(in []byte) []byte {
-	return AESEncryptECB(append(in, Base64ToBytes(oracleUnknown)...), OracleKey)
+	return AESEncryptECB(append(in, Base64ToBytes(oracleUnknown)...), oracleKey)
 }
 
 func OracleAESVarEncryptECB(in []byte) []byte {
 	in = append(oracleRandom, in...)
 	in = append(in, Base64ToBytes(oracleUnknown)...)
-	return AESEncryptECB(in, OracleKey)
+	return AESEncryptECB(in, oracleKey)
 }

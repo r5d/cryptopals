@@ -11,6 +11,10 @@ import (
 
 // Cryptopals #17 - CBC padding oracle attack
 func C17() {
+	key, err := lib.RandomKey(16)
+	if err != nil {
+		fmt.Printf("key generation: error: %v\n", err)
+	}
 	cookies := []string{
 		"MDAwMDAwTm93IHRoYXQgdGhlIHBhcnR5IGlzIGp1bXBpbmc=",
 		"MDAwMDAxV2l0aCB0aGUgYmFzcyBraWNrZWQgaW4gYW5kIHRoZSBWZWdhJ3MgYXJlIHB1bXBpbic=",
@@ -26,14 +30,17 @@ func C17() {
 	encrypt := func() ([]byte, []byte) {
 		r := lib.RandomInt(0, int64(len(cookies)-1))
 		p := lib.Base64ToBytes(cookies[r])
-		k := lib.OracleKey
-		iv := lib.OracleIV
+		k := key
+		iv, err := lib.RandomKey(16)
+		if err != nil {
+			fmt.Printf("iv generation: error: %v\n", err)
+		}
 		c := lib.AESEncryptCBC(p, k, iv)
 
 		return c, iv
 	}
 	decrypt := func(c, iv []byte) bool {
-		k := lib.OracleKey
+		k := key
 		_, err := lib.AESDecryptCBC(c, k, iv)
 		if err != nil {
 			return false
