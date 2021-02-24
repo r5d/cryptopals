@@ -37,7 +37,7 @@ func RandomBytes(size int) ([]byte, error) {
 }
 
 // Randomly generates `min` to `max` bytes.
-func randomBytes(min, max int64) []byte {
+func randomBytesWithLengthBetween(min, max int64) []byte {
 	bs := make([]byte, RandomInt(min, max))
 	_, err := rand.Read(bs)
 	if err != nil {

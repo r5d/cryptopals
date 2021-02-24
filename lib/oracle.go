@@ -41,8 +41,8 @@ func OracleAESRandomEncrypt(in []byte) []byte {
 	}
 
 	// Add 5-10 bytes at the beginning and end of `in`
-	in = append(randomBytes(5, 10), in...)
-	in = append(in, randomBytes(5, 10)...)
+	in = append(randomBytesWithLengthBetween(5, 10), in...)
+	in = append(in, randomBytesWithLengthBetween(5, 10)...)
 
 	// Randomly encrypt `in` with AES in ECB or CBC mode.
 	m := RandomInt(0, 1)
