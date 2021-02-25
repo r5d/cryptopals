@@ -10,11 +10,43 @@ import (
 )
 
 func C11() {
+	// Given an input `in`, this function AES encrypts `in` using a
+	// randomly generate 16-byte key using ECB or CBC mode and returns the
+	// cipher.
+	encrypt := func(in []byte) []byte {
+		// Generate random key.
+		key, err := lib.RandomBytes(16)
+		if err != nil {
+			panic(err)
+		}
+		// Generate random initialization vector; needed for AES CBC.
+		iv, err := lib.RandomBytes(16)
+		if err != nil {
+			panic(err)
+		}
+
+		// Add 5-10 bytes at the beginning and end of `in`
+		in = append(lib.RandomBytesWithLengthBetween(5, 10), in...)
+		in = append(in, lib.RandomBytesWithLengthBetween(5, 10)...)
+
+		// Randomly encrypt `in` with AES in ECB or CBC mode.
+		m := lib.RandomInt(0, 1)
+		var out []byte
+		if m == 0 {
+			// Encrypt with AES in ECB mode.
+			out = lib.AESEncryptECB(in, key)
+		} else {
+			// Encrypt with AES in CBC mode.
+			out = lib.AESEncryptCBC(in, key, iv)
+		}
+		return out
+	}
+
 	p := lib.StrToBytes("YellowSubmarine YellowSubmarine YellowSubmarine")
 	fmt.Printf("Input: %v (%d)\n", p, len(p))
 
 	for i := 0; i < 10; i++ {
-		o := lib.OracleAESRandomEncrypt(p)
+		o := encrypt(p)
 		if lib.CipherUsesECB(o) != nil {
 			fmt.Printf("%d -> Enciphered with ECB: %v (%d)\n", i, o, len(o))
 		} else {
