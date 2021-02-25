@@ -11,6 +11,23 @@ import (
 
 func C14() {
 	sheep := byte(65)
+	unknown := `Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
+aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
+dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
+YnkK`
+	key, err := lib.RandomBytes(16)
+	if err != nil {
+		fmt.Printf("key generatation error: %v", err)
+	}
+	oracleRandom, err := lib.RandomBytes(int(lib.RandomInt(1, 4096)))
+	if err != nil {
+		fmt.Printf("oracle random generation error: %v", err)
+	}
+	encrypt := func(in []byte) []byte {
+		in = append(oracleRandom, in...)
+		in = append(in, lib.Base64ToBytes(unknown)...)
+		return lib.AESEncryptECB(in, key)
+	}
 	freshSheepBytes := func(n int) []byte {
 		in := make([]byte, n)
 		for i := 0; i < n; i++ {
@@ -22,11 +39,11 @@ func C14() {
 		in := make([]byte, 0)
 
 		in = append(in, sheep)
-		is := len(lib.OracleAESVarEncryptECB(in)) // initial size
+		is := len(encrypt(in)) // initial size
 		bs := 0
 		for {
 			in = append(in, sheep)
-			bs = len(lib.OracleAESVarEncryptECB(in))
+			bs = len(encrypt(in))
 			if bs != is {
 				return (bs - is)
 			}
@@ -41,7 +58,7 @@ func C14() {
 		found := false
 		for {
 			in := append(v, tsb...)
-			c := lib.OracleAESVarEncryptECB(in)
+			c := encrypt(in)
 			index, found = lib.HasConsecutiveMatchingBlocks(c, blocksize)
 			if found {
 				break
@@ -63,7 +80,7 @@ func C14() {
 	findUnknownStringNumBlocksLength := func(rpl, blocksize int) (int, int) {
 		padding := blocksize - (rpl % blocksize)
 		in := make([]byte, padding)
-		c_sz := len(lib.OracleAESVarEncryptECB(in)) // Cipher size
+		c_sz := len(encrypt(in)) // Cipher size
 
 		nblocks := c_sz / blocksize            // total number of blocks
 		rblocks := (rpl + padding) / blocksize // number of blocks of random prefix
@@ -71,7 +88,7 @@ func C14() {
 		// Figure out size of unknown string.
 		for {
 			in = append(in, sheep)
-			bs := len(lib.OracleAESVarEncryptECB(in))
+			bs := len(encrypt(in))
 			if bs != c_sz {
 				return ublocks, (c_sz - len(in) - rpl)
 			}
@@ -85,7 +102,7 @@ func C14() {
 	// `in` (n-1)th block that is known
 	// `ds` deciphered unknown string
 	decipherOneByte := func(nrpb, rpo, blocksize, block, n int, in, ds []byte) ([]byte, []byte) {
-		oo := lib.OracleAESVarEncryptECB(in[0:(len(in) - n)])
+		oo := encrypt(in[0:(len(in) - n)])
 
 		s := (nrpb * blocksize) + 16*(block-1)
 		e := s + 16
@@ -99,7 +116,7 @@ func C14() {
 		// Try all combinations.
 		for i := 0; i < 256; i++ {
 			in[len(in)-1] = byte(i)
-			oo = lib.OracleAESVarEncryptECB(in)
+			oo = encrypt(in)
 
 			if lib.BlocksEqual(nbl,
 				oo[(nrpb*blocksize):(nrpb*blocksize)+16]) {

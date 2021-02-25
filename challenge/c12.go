@@ -11,6 +11,18 @@ import (
 
 func C12() {
 	sheep := byte(65)
+	unknown := `Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
+aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
+dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
+YnkK`
+	key, err := lib.RandomBytes(16)
+	if err != nil {
+		fmt.Printf("key generatation error: %v", err)
+	}
+	encrypt := func(in []byte) []byte {
+		return lib.AESEncryptECB(append(in, lib.Base64ToBytes(unknown)...), key)
+	}
+
 	freshSheepBytes := func(n int) []byte {
 		in := make([]byte, n)
 		for i := 0; i < n; i++ {
@@ -22,11 +34,11 @@ func C12() {
 		in := make([]byte, 0)
 
 		in = append(in, sheep)
-		is := len(lib.OracleAESEncryptECB(in)) // initial size
-		bs := 0                                // block size
+		is := len(encrypt(in)) // initial size
+		bs := 0                // block size
 		for {
 			in = append(in, sheep)
-			bs = len(lib.OracleAESEncryptECB(in))
+			bs = len(encrypt(in))
 			if bs != is {
 				return (bs - is)
 			}
@@ -34,13 +46,13 @@ func C12() {
 	}
 	findUnknownStringCharacteristics := func(blocksize int) (int, int) {
 		in := make([]byte, 0)
-		c_sz := len(lib.OracleAESEncryptECB(in)) // Cipher size
-		nblocks := c_sz / blocksize              // number of blocks
+		c_sz := len(encrypt(in))    // Cipher size
+		nblocks := c_sz / blocksize // number of blocks
 
 		// Figure out ize of unknown string.
 		for {
 			in = append(in, sheep)
-			bs := len(lib.OracleAESEncryptECB(in))
+			bs := len(encrypt(in))
 			if bs != c_sz {
 				return nblocks, (c_sz - len(in))
 			}
@@ -49,7 +61,7 @@ func C12() {
 	}
 	isOracleUsingECB := func() bool {
 		in := lib.StrToBytes("OliverMkTukudzi OliverMkTukudzi OliverMkTukudzi")
-		oo := lib.OracleAESEncryptECB(in)
+		oo := encrypt(in)
 		if lib.CipherUsesECB(oo) != nil {
 			return true
 		}
@@ -61,7 +73,7 @@ func C12() {
 	// `in` (n-1)th block that is known
 	// `ds` deciphered unknown string
 	decipherUnknownStringIter := func(blocksize, block, n int, in, ds []byte) ([]byte, []byte) {
-		oo := lib.OracleAESEncryptECB(in[0:(blocksize - n)])
+		oo := encrypt(in[0:(blocksize - n)])
 
 		s := 16 * (block - 1)
 		e := s + 16
@@ -75,7 +87,7 @@ func C12() {
 		// Try all combinations.
 		for i := 0; i < 256; i++ {
 			in[15] = byte(i)
-			oo = lib.OracleAESEncryptECB(in)
+			oo = encrypt(in)
 
 			if lib.BlocksEqual(nbl, oo[0:16]) {
 				ds = append(ds, in[15])
