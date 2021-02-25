@@ -126,7 +126,6 @@ YnkK`
 		}
 		panic("not found!")
 	}
-
 	blocksize := findBlockSize()
 	rpl, nrpb, rpo := findPrefixLen(blocksize)
 	nbl, us_sz := findUnknownStringNumBlocksLength(

@@ -22,7 +22,6 @@ YnkK`
 	encrypt := func(in []byte) []byte {
 		return lib.AESEncryptECB(append(in, lib.Base64ToBytes(unknown)...), key)
 	}
-
 	freshSheepBytes := func(n int) []byte {
 		in := make([]byte, n)
 		for i := 0; i < n; i++ {
@@ -96,7 +95,6 @@ YnkK`
 		}
 		panic("not found!")
 	}
-
 	if !isOracleUsingECB() {
 		panic("oracle not using ecb mode")
 	}

@@ -82,15 +82,12 @@ kkIzWhQ5Rxd/vnM2QQr9Cxa2J9GXEV3kGDiZV90+PCDSVGY4VgF8y7GedI1h`)
 		"f69f2445df4f9b17ad2b417be66c3710")
 	key80038A := lib.HexStrToBytes("2b7e151628aed2a6abf7158809cf4f3c")
 	iv80038A := lib.HexStrToBytes("000102030405060708090a0b0c0d0e0f")
-
 	cipher80038A := lib.AESEncryptCBC(plain80038A, key80038A, iv80038A)
 	fmt.Printf("NIST SP 800-38A F.2.1 (has padding):\n%v\n",
 		lib.PrettifyHexStr(lib.BytesToHexStr(cipher80038A)))
-
 	o, _ := lib.AESDecryptCBC(cipher80038A, key80038A, iv80038A)
 	fmt.Printf("NIST SP 800-38A F.2.2:\n%v\n",
 		lib.PrettifyHexStr(lib.BytesToHexStr(o)))
-
 	o, _ = lib.AESDecryptCBC(cipher, key, iv)
 	fmt.Printf("Cryptopals Ch. 10:\n%v", lib.BytesToStr(o))
 }

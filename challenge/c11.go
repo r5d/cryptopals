@@ -41,7 +41,6 @@ func C11() {
 		}
 		return out
 	}
-
 	p := lib.StrToBytes("YellowSubmarine YellowSubmarine YellowSubmarine")
 	fmt.Printf("Input: %v (%d)\n", p, len(p))
 

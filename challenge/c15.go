@@ -31,7 +31,6 @@ func C15() {
 	if err != nil {
 		fmt.Printf("bad ice upadding failed: %s\n", err.Error())
 	}
-
 	// Will fail.
 	evil_ice := append(ice, []byte{1, 2, 3, 4}...)
 	fmt.Printf("evil ice: %v\n", evil_ice)
