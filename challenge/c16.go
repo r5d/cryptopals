@@ -4,15 +4,13 @@
 package challenge
 
 import (
-	"crypto/rand"
 	"fmt"
 
 	"ricketyspace.net/cryptopals/lib"
 )
 
 func C16() {
-	key := make([]byte, 16)
-	_, err := rand.Read(key)
+	key, err := lib.RandomBytes(16)
 	if err != nil {
 		fmt.Printf("bit flip key: error: %v", err)
 	}
