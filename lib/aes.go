@@ -3,6 +3,31 @@
 
 package lib
 
+func AESDecryptCTR(cipher, key []byte, ctrFunc func() []byte) ([]byte, error) {
+	if len(key) != 16 {
+		return []byte{}, CPError{"key length != 16"}
+	}
+	iter := len(cipher) / 16
+	if len(cipher)%16 != 0 {
+		iter += 1
+	}
+	output := make([]byte, 0)
+	for i := 0; i < iter; i++ {
+		ib := ctrFunc()
+		if len(ib) != 16 {
+			return []byte{}, CPError{"ctr length != 16"}
+		}
+		s := (i * 16)
+		e := (i * 16) + 16
+		if e > len(cipher) {
+			e = len(cipher)
+		}
+		c := cipher[s:e]
+		output = append(output, FixedXORBytes(aesCipher(ib, key)[0:len(c)], c)...)
+	}
+	return output, nil
+}
+
 func AESEncryptCBC(plain, key, iv []byte) []byte {
 	// Pad input
 	plain = Pkcs7Padding(plain, 16)
