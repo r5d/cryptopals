@@ -3,6 +3,29 @@
 
 package lib
 
+// Generates counter function for AES CTR mode.
+func AESGenCTRFunc(nonce uint64) func() []byte {
+	ctr := uint64(0) // Counter
+	ff := uint64(0xFF)
+	cf := func() []byte {
+		cb := make([]byte, 16) // counter block
+		var i, j uint
+		// Put nonce in the first 8 bytes in cb in little endian format
+		for i = 0; i < 8; i++ {
+			n := nonce & (ff << (i * 8)) // Reset all except the i^th byte of the nonce
+			cb[i] = byte(n >> (i * 8))   // Retrieve i^th byte of the nonce
+		}
+		// Put counter in the next 8 bytes in cb in little endian format
+		for i, j = 8, 0; i < 16; i, j = i+1, j+1 {
+			n := ctr & (ff << (j * 8)) // Reset all except the j^th byte of the counter
+			cb[i] = byte(n >> (j * 8)) // Retrieve j^th byte of the counter
+		}
+		ctr += 1 // Increment counter by 1
+		return cb
+	}
+	return cf
+}
+
 func AESEncryptCTR(plain, key []byte, ctrFunc func() []byte) ([]byte, error) {
 	if len(key) != 16 {
 		return []byte{}, CPError{"key length != 16"}
