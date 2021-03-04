@@ -3,12 +3,23 @@
 
 package lib
 
+func AESEncryptCTR(plain, key []byte, ctrFunc func() []byte) ([]byte, error) {
+	if len(key) != 16 {
+		return []byte{}, CPError{"key length != 16"}
+	}
+	return aesCipherCTR(plain, key, ctrFunc)
+}
+
 func AESDecryptCTR(cipher, key []byte, ctrFunc func() []byte) ([]byte, error) {
 	if len(key) != 16 {
 		return []byte{}, CPError{"key length != 16"}
 	}
-	iter := len(cipher) / 16
-	if len(cipher)%16 != 0 {
+	return aesCipherCTR(cipher, key, ctrFunc)
+}
+
+func aesCipherCTR(in, key []byte, ctrFunc func() []byte) ([]byte, error) {
+	iter := len(in) / 16
+	if len(in)%16 != 0 {
 		iter += 1
 	}
 	output := make([]byte, 0)
@@ -19,10 +30,10 @@ func AESDecryptCTR(cipher, key []byte, ctrFunc func() []byte) ([]byte, error) {
 		}
 		s := (i * 16)
 		e := (i * 16) + 16
-		if e > len(cipher) {
-			e = len(cipher)
+		if e > len(in) {
+			e = len(in)
 		}
-		c := cipher[s:e]
+		c := in[s:e]
 		output = append(output, FixedXORBytes(aesCipher(ib, key)[0:len(c)], c)...)
 	}
 	return output, nil
