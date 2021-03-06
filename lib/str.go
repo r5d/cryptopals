@@ -123,13 +123,17 @@ func StrSplitAt(c byte, s string) []string {
 func StrToUpper(s string) string {
 	us := ""
 	for i := 0; i < len(s); i++ {
-		if 'a' <= s[i] && s[i] <= 'z' {
-			us += string('A' + (s[i] - 'a'))
-		} else {
-			us += string(s[i])
-		}
+		us += string(ByteToUpper(s[i]))
 	}
 	return us
+}
+
+func ByteToUpper(b byte) byte {
+	if 'a' <= b && b <= 'z' {
+		return 'A' + (b - 'a')
+	} else {
+		return b
+	}
 }
 
 // Returns true if string 's' has string 'n' in it.
