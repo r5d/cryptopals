@@ -13,7 +13,8 @@ func ByteInBytes(b byte, bs []byte) bool {
 	return false
 }
 
-// Returns bytes that are common in the given array of array of bytes `bbytes`.
+// Returns bytes that are common in the given array of array of bytes
+// `bbytes`.
 func BytesInCommon(bbytes [][]byte) []byte {
 	common := make([]byte, 0)
 	switch l := len(bbytes); {
