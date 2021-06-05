@@ -16,11 +16,13 @@ func ByteInBytes(b byte, bs []byte) bool {
 // Returns bytes that are common in the given array of array of bytes
 // `bbytes`.
 func BytesInCommon(bbytes [][]byte) []byte {
-	common := make([]byte, 0)
+	var common []byte
 	switch l := len(bbytes); {
 	case l == 1:
-		common = bbytes[0]
+		common = make([]byte, len(bbytes[0]))
+		copy(common, bbytes[0])
 	case l > 1:
+		common = make([]byte, 0)
 		commonRest := BytesInCommon(bbytes[1:])
 		for _, b := range bbytes[0] {
 			if ByteInBytes(b, commonRest) {
