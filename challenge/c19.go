@@ -52,7 +52,7 @@ func C19() {
 		"VHJhbnNmb3JtZWQgdXR0ZXJseTo=",
 		"QSB0ZXJyaWJsZSBiZWF1dHkgaXMgYm9ybi4=",
 	}
-	// English alphabets ordered by frequency
+	// ASCII characters ordered by frequency
 	// (https://mdickens.me/typing/letter_frequency.html)
 	ascii := []byte{
 		' ', 'e', 't', 'a', 'o', 'i', 'n', 's', 'r', 'h', 'l', 'd',
