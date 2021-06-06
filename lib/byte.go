@@ -32,3 +32,10 @@ func BytesInCommon(bbytes [][]byte) []byte {
 	}
 	return common
 }
+
+func ByteIsUpper(b byte) bool {
+	if 'A' <= b && b <= 'Z' {
+		return true
+	}
+	return false
+}
