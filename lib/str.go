@@ -89,28 +89,9 @@ func StripSpaceChars(s string) string {
 func AlphaPunchScore(bs []byte) int {
 	s := 0
 	for i := 0; i < len(bs); i++ {
-		if isAlphaPunch(bs[i]) {
-			s += 1
-		}
+		s += AsciiScores[bs[i]]
 	}
 	return s
-}
-
-// Returns true if byte 'c' is a non-numeric character in the English language.
-func isAlphaPunch(c byte) bool {
-	switch {
-	case 'A' <= c && c <= 'Z':
-		return true
-	case 'a' <= c && c <= 'z':
-		return true
-	case c == ' ' || c == '.':
-		return true
-	case c == ',' || c == '\'':
-		return true
-	case c == '"':
-		return true
-	}
-	return false
 }
 
 func NumToChar(n int64) byte {
