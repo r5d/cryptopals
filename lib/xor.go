@@ -35,29 +35,23 @@ func FixedXORBytes(as, bs []byte) []byte {
 }
 
 // Both 'data' and 'key' need to be plain ascii string.
-func RepeatingXOR(data, key string) string {
-	xs := ""
+func RepeatingXOR(data, key []byte) []byte {
+	xs := make([]byte, 0)
 	if len(data) < 1 || len(key) < 1 {
 		return xs
 	}
 
-	// data in bytes
-	db := []byte(data)
-
-	// key in bytes
-	dk := []byte(key)
-
 	lk := len(key)
-	for i, ki := 0, 0; i < len(db); i++ {
+	for i, ki := 0, 0; i < len(data); i++ {
 		if ki == lk {
 			ki = 0
 		}
 
 		// xor a byte
-		eb := db[i] ^ dk[ki]
+		eb := data[i] ^ key[ki]
 
 		// append to result
-		xs += string(eb)
+		xs = append(xs, eb)
 
 		ki += 1
 	}

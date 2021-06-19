@@ -94,17 +94,17 @@ Jk8DCkkcC3hFMQIEC0EbAVIqCFZBO1IdBgZUVA4QTgUWSR4QJwwRTWM=`
 	}
 	// 'bs' is the data to decrypt.
 	// 'ks' is the key size.
-	crack := func(bs []byte, ks int) (string, string) {
+	crack := func(bs []byte, ks int) ([]byte, []byte) {
 		blocks := lib.BreakIntoBlocks(bs, ks)
 		blocks = lib.TransposeBlocks(blocks, ks)
 
-		key := ""
+		key := make([]byte, 0)
 		for i := 0; i < len(blocks); i++ {
 			k := findKey(blocks[i])
 
-			key += string(k)
+			key = append(key, k)
 		}
-		return key, lib.RepeatingXOR(string(bs), key)
+		return key, lib.RepeatingXOR(bs, key)
 	}
 
 	// Compute keysize.

@@ -10,12 +10,12 @@ import (
 )
 
 func C5() {
-	icebaby := `Burning 'em, if you ain't quick and nimble
-I go crazy when I hear a cymbal`
-	key := "ICE"
-	es := lib.RepeatingXOR(icebaby, key)
-	hs := lib.AsciiStrToHexStr(es)
-	fmt.Printf("RepeatingXOR('%v', '%v') = %v\n", icebaby, key, hs)
+	icebaby := lib.StrToBytes(`Burning 'em, if you ain't quick and nimble
+I go crazy when I hear a cymbal`)
+	key := lib.StrToBytes("ICE")
+	eb := lib.RepeatingXOR(icebaby, key)
+	hs := lib.AsciiStrToHexStr(lib.BytesToStr(eb))
+	fmt.Printf("RepeatingXOR('%s', '%s') = %v\n", icebaby, key, hs)
 }
 
 // Output:
