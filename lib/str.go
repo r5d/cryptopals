@@ -3,6 +3,33 @@
 
 package lib
 
+// Key: ASCII character; Value: score
+var AsciiScores map[byte]int = make(map[byte]int, 0)
+
+// Printable ASCII characters orrdered by frequency.
+// (https://mdickens.me/typing/letter_frequency.html)
+var PrintableAscii []byte = []byte{
+	' ', 'e', 't', 'a', 'o', 'i', 'n', 's', 'r', 'h', 'l', 'd',
+	'c', 'u', 'm', 'f', 'g', 'p', 'y', 'w', 'b', ',', '.',
+	'v', 'k', '-', '"', '_', '\'', 'x', ')', '(', ';', '0', 'j',
+	'1', 'q', '=', '2', ':', 'z', '/', '*', '!', '?', '$', '3',
+	'5', '>', '{', '}', '4', '9', '[', ']', '8', '6', '7', '\\',
+	'+', '|', '&', '<', '%', '@', '#', '^', '`', '~',
+}
+
+func init() {
+	// Initialize AsciiScores
+	for pos, a := range PrintableAscii {
+		AsciiScores[a] = 255 - pos
+		// Also add the uppercase version of ascii
+		// character if it exists.
+		au := ByteToUpper(a)
+		if a != au {
+			AsciiScores[au] = 255 - pos
+		}
+	}
+}
+
 func FillStr(a string, l int) string {
 	b := ""
 	if l < 1 {

@@ -52,27 +52,6 @@ func C19() {
 		"VHJhbnNmb3JtZWQgdXR0ZXJseTo=",
 		"QSB0ZXJyaWJsZSBiZWF1dHkgaXMgYm9ybi4=",
 	}
-	// ASCII characters ordered by frequency
-	// (https://mdickens.me/typing/letter_frequency.html)
-	ascii := []byte{
-		' ', 'e', 't', 'a', 'o', 'i', 'n', 's', 'r', 'h', 'l', 'd',
-		'c', 'u', 'm', 'f', 'g', 'p', 'y', 'w', 'b', ',', '.',
-		'v', 'k', '-', '"', '_', '\'', 'x', ')', '(', ';', '0', 'j',
-		'1', 'q', '=', '2', ':', 'z', '/', '*', '!', '?', '$', '3',
-		'5', '>', '{', '}', '4', '9', '[', ']', '8', '6', '7', '\\',
-		'+', '|', '&', '<', '%', '@', '#', '^', '`', '~',
-	}
-	// Key: ASCII character; Value: score
-	asciiScores := make(map[byte]int, 0)
-	for pos, a := range ascii {
-		asciiScores[a] = 255 - pos
-		// Also add the uppercase version of ascii
-		// character if it exists.
-		au := lib.ByteToUpper(a)
-		if a != au {
-			asciiScores[au] = 255 - pos
-		}
-	}
 
 	// Utility functions.
 	cipherStreamByteGroups := func(ciphers [][]byte) map[int][]byte {
@@ -91,7 +70,7 @@ func C19() {
 		po := make([][]byte, len(g)) // Potential Output block bytes
 		for i, c := range g {
 			po[i] = make([]byte, 0)
-			for _, a := range ascii {
+			for _, a := range lib.PrintableAscii {
 				o := c ^ a
 				po[i] = append(po[i], o)
 
@@ -117,7 +96,7 @@ func C19() {
 			scr := 0
 			for _, c := range g {
 				p := c ^ o
-				if s, ok := asciiScores[p]; ok {
+				if s, ok := lib.AsciiScores[p]; ok {
 					scr += s
 				}
 				if pos == 0 && lib.ByteIsUpper(p) {
