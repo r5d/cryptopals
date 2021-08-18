@@ -19,12 +19,29 @@ var mtCoefL uint32 = 18
 
 var mtF uint32 = 1812433253
 
+// MT19937 instance struct
+type MTRand struct {
+	genSt       [624]uint32
+	index       uint32
+	initialized bool
+}
+
 // Stores state of MT19937 generator.
 var mtGenSt []uint32 = make([]uint32, mtCoefN)
 var mtIndex uint32 = mtCoefN + 1
 
 var mtLowerMask uint32 = (1 << mtCoefR) - 1
 var mtUpperMask uint32 = 0xFFFFFFFF & (^mtLowerMask)
+
+func (r *MTRand) Seed(s uint32) {
+	r.index = mtCoefN
+	r.genSt[0] = s
+	for i := uint32(1); i < mtCoefN; i++ {
+		r.genSt[i] = (0xFFFFFFFF &
+			(mtF*(r.genSt[i-1]^(r.genSt[i-1]>>(mtCoefW-2))) + i))
+	}
+	r.initialized = true
+}
 
 func MTSeed(seed uint32) {
 	mtIndex = mtCoefN
@@ -33,6 +50,26 @@ func MTSeed(seed uint32) {
 		mtGenSt[i] = (0xFFFFFFFF &
 			(mtF*(mtGenSt[i-1]^(mtGenSt[i-1]>>(mtCoefW-2))) + i))
 	}
+}
+
+func (r *MTRand) Extract() uint32 {
+	if !r.initialized || r.index >= mtCoefN {
+		if !r.initialized {
+			r.Seed(5489)
+		}
+		r.twist()
+	}
+
+	y := r.genSt[r.index]
+	y = y ^ ((y >> mtCoefU) & mtCoefD)
+	y = y ^ ((y << mtCoefS) & mtCoefB)
+	y = y ^ ((y << mtCoefT) & mtCoefC)
+	y = y ^ (y >> mtCoefL)
+
+	r.index = r.index + 1
+
+	y = 0xFFFFFFFF & y
+	return y
 }
 
 func MTExtract() uint32 {
@@ -53,6 +90,19 @@ func MTExtract() uint32 {
 
 	r := 0xFFFFFFFF & y
 	return r
+}
+
+func (r *MTRand) twist() {
+	for i := uint32(0); i < mtCoefN-1; i++ {
+		x := (r.genSt[i] & mtUpperMask) +
+			(r.genSt[(i+1)%mtCoefN] & mtLowerMask)
+		xA := x >> 1
+		if x%2 != 0 { // lowest bit of x is 1
+			xA = xA ^ mtCoefA
+		}
+		r.genSt[i] = r.genSt[(i+mtCoefM)%mtCoefN] ^ xA
+	}
+	r.index = 0
 }
 
 func mtTwist() {
