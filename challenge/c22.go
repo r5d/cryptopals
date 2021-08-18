@@ -11,6 +11,7 @@ import (
 )
 
 func C22() {
+	mt := new(lib.MTRand)
 	minWait := 40 * time.Second
 	maxWait := 1000 * time.Second
 	randomWait := func() {
@@ -25,17 +26,17 @@ func C22() {
 
 	randomWait()
 	fmt.Printf("Generating seed from current time...\n")
-	lib.MTSeed(uint32(time.Now().Unix()))
+	mt.Seed(uint32(time.Now().Unix()))
 	randomWait()
 
 	fmt.Printf("Extracting first random 32-bit garbage fron RNG...\n")
-	random := lib.MTExtract()
+	random := mt.Extract()
 
 	fmt.Printf("Cracking seed...\n")
 	guess := uint32(time.Now().Unix())
 	for {
-		lib.MTSeed(guess)
-		x := lib.MTExtract()
+		mt.Seed(guess)
+		x := mt.Extract()
 		if x == random {
 			fmt.Printf("Found seed %v\n", guess)
 			break
