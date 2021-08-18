@@ -71,3 +71,24 @@ func (r *MTRand) twist() {
 	}
 	r.index = 0
 }
+
+func (r *MTRand) UnTemper(y uint32) uint32 {
+	y = y ^ (y >> mtCoefL)
+
+	y0 := y
+	y = y0 ^ ((y0 << mtCoefT) & mtCoefC)
+	y = y0 ^ ((y << mtCoefT) & mtCoefC)
+
+	y0 = y
+	y = y0 ^ ((y0 << mtCoefS) & mtCoefB)
+	y = y0 ^ ((y << mtCoefS) & mtCoefB)
+	y = y0 ^ ((y << mtCoefS) & mtCoefB)
+	y = y0 ^ ((y << mtCoefS) & mtCoefB)
+
+	y0 = y
+	y = y0 ^ (y0 >> mtCoefU)
+	y = y0 ^ (y >> mtCoefU)
+
+	y = 0xFFFFFFFF & y
+	return y
+}
