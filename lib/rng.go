@@ -26,10 +26,6 @@ type MTRand struct {
 	initialized bool
 }
 
-// Stores state of MT19937 generator.
-var mtGenSt []uint32 = make([]uint32, mtCoefN)
-var mtIndex uint32 = mtCoefN + 1
-
 var mtLowerMask uint32 = (1 << mtCoefR) - 1
 var mtUpperMask uint32 = 0xFFFFFFFF & (^mtLowerMask)
 
@@ -41,15 +37,6 @@ func (r *MTRand) Seed(s uint32) {
 			(mtF*(r.genSt[i-1]^(r.genSt[i-1]>>(mtCoefW-2))) + i))
 	}
 	r.initialized = true
-}
-
-func MTSeed(seed uint32) {
-	mtIndex = mtCoefN
-	mtGenSt[0] = seed
-	for i := uint32(1); i < mtCoefN; i++ {
-		mtGenSt[i] = (0xFFFFFFFF &
-			(mtF*(mtGenSt[i-1]^(mtGenSt[i-1]>>(mtCoefW-2))) + i))
-	}
 }
 
 func (r *MTRand) Extract() uint32 {
@@ -72,26 +59,6 @@ func (r *MTRand) Extract() uint32 {
 	return y
 }
 
-func MTExtract() uint32 {
-	if mtIndex >= mtCoefN {
-		if mtIndex > mtCoefN {
-			MTSeed(5489)
-		}
-		mtTwist()
-	}
-
-	y := mtGenSt[mtIndex]
-	y = y ^ ((y >> mtCoefU) & mtCoefD)
-	y = y ^ ((y << mtCoefS) & mtCoefB)
-	y = y ^ ((y << mtCoefT) & mtCoefC)
-	y = y ^ (y >> mtCoefL)
-
-	mtIndex = mtIndex + 1
-
-	r := 0xFFFFFFFF & y
-	return r
-}
-
 func (r *MTRand) twist() {
 	for i := uint32(0); i < mtCoefN-1; i++ {
 		x := (r.genSt[i] & mtUpperMask) +
@@ -103,17 +70,4 @@ func (r *MTRand) twist() {
 		r.genSt[i] = r.genSt[(i+mtCoefM)%mtCoefN] ^ xA
 	}
 	r.index = 0
-}
-
-func mtTwist() {
-	for i := uint32(0); i < mtCoefN-1; i++ {
-		x := (mtGenSt[i] & mtUpperMask) +
-			(mtGenSt[(i+1)%mtCoefN] & mtLowerMask)
-		xA := x >> 1
-		if x%2 != 0 { // lowest bit of x is 1
-			xA = xA ^ mtCoefA
-		}
-		mtGenSt[i] = mtGenSt[(i+mtCoefM)%mtCoefN] ^ xA
-	}
-	mtIndex = 0
 }
