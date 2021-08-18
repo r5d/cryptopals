@@ -10,8 +10,9 @@ import (
 )
 
 func C21() {
+	mt := new(lib.MTRand)
 	for {
-		fmt.Printf("%v\n", lib.MTExtract())
+		fmt.Printf("%v\n", mt.Extract())
 	}
 }
 
