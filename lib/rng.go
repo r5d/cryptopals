@@ -21,7 +21,7 @@ var mtF uint32 = 1812433253
 
 // MT19937 instance struct
 type MTRand struct {
-	genSt       [624]uint32
+	GenSt       [624]uint32
 	index       uint32
 	initialized bool
 }
@@ -31,10 +31,10 @@ var mtUpperMask uint32 = 0xFFFFFFFF & (^mtLowerMask)
 
 func (r *MTRand) Seed(s uint32) {
 	r.index = mtCoefN
-	r.genSt[0] = s
+	r.GenSt[0] = s
 	for i := uint32(1); i < mtCoefN; i++ {
-		r.genSt[i] = (0xFFFFFFFF &
-			(mtF*(r.genSt[i-1]^(r.genSt[i-1]>>(mtCoefW-2))) + i))
+		r.GenSt[i] = (0xFFFFFFFF &
+			(mtF*(r.GenSt[i-1]^(r.GenSt[i-1]>>(mtCoefW-2))) + i))
 	}
 	r.initialized = true
 }
@@ -47,7 +47,7 @@ func (r *MTRand) Extract() uint32 {
 		r.twist()
 	}
 
-	y := r.genSt[r.index]
+	y := r.GenSt[r.index]
 	y = y ^ ((y >> mtCoefU) & mtCoefD)
 	y = y ^ ((y << mtCoefS) & mtCoefB)
 	y = y ^ ((y << mtCoefT) & mtCoefC)
@@ -61,13 +61,13 @@ func (r *MTRand) Extract() uint32 {
 
 func (r *MTRand) twist() {
 	for i := uint32(0); i < mtCoefN-1; i++ {
-		x := (r.genSt[i] & mtUpperMask) +
-			(r.genSt[(i+1)%mtCoefN] & mtLowerMask)
+		x := (r.GenSt[i] & mtUpperMask) +
+			(r.GenSt[(i+1)%mtCoefN] & mtLowerMask)
 		xA := x >> 1
 		if x%2 != 0 { // lowest bit of x is 1
 			xA = xA ^ mtCoefA
 		}
-		r.genSt[i] = r.genSt[(i+mtCoefM)%mtCoefN] ^ xA
+		r.GenSt[i] = r.GenSt[(i+mtCoefM)%mtCoefN] ^ xA
 	}
 	r.index = 0
 }
