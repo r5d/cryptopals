@@ -22,7 +22,7 @@ var mtF uint32 = 1812433253
 // MT19937 instance struct
 type MTRand struct {
 	GenSt       [624]uint32
-	index       uint32
+	Index       uint32
 	initialized bool
 }
 
@@ -30,7 +30,7 @@ var mtLowerMask uint32 = (1 << mtCoefR) - 1
 var mtUpperMask uint32 = 0xFFFFFFFF & (^mtLowerMask)
 
 func (r *MTRand) Seed(s uint32) {
-	r.index = mtCoefN
+	r.Index = mtCoefN
 	r.GenSt[0] = s
 	for i := uint32(1); i < mtCoefN; i++ {
 		r.GenSt[i] = (0xFFFFFFFF &
@@ -40,20 +40,21 @@ func (r *MTRand) Seed(s uint32) {
 }
 
 func (r *MTRand) Extract() uint32 {
-	if !r.initialized || r.index >= mtCoefN {
+	if !r.initialized || r.Index >= mtCoefN {
 		if !r.initialized {
 			r.Seed(5489)
 		}
 		r.twist()
 	}
 
-	y := r.GenSt[r.index]
+	y := r.GenSt[r.Index]
+
 	y = y ^ ((y >> mtCoefU) & mtCoefD)
 	y = y ^ ((y << mtCoefS) & mtCoefB)
 	y = y ^ ((y << mtCoefT) & mtCoefC)
 	y = y ^ (y >> mtCoefL)
 
-	r.index = r.index + 1
+	r.Index = r.Index + 1
 
 	y = 0xFFFFFFFF & y
 	return y
@@ -69,7 +70,7 @@ func (r *MTRand) twist() {
 		}
 		r.GenSt[i] = r.GenSt[(i+mtCoefM)%mtCoefN] ^ xA
 	}
-	r.index = 0
+	r.Index = 0
 }
 
 func (r *MTRand) UnTemper(y uint32) uint32 {
