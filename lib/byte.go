@@ -39,3 +39,7 @@ func ByteIsUpper(b byte) bool {
 	}
 	return false
 }
+
+func BytesEqual(a, b []byte) bool {
+	return BlocksEqual(a, b)
+}
