@@ -40,7 +40,7 @@ func C24() {
 	) // Plaintext; last 14 characters known.
 	cipher := lib.MTXORStream(plain, seed) // Encrypt plaintext.
 	cseed := crack(cipher)                 // Try to crack seed
-	if lib.BytesEqual(cseed, seed) {
+	if !lib.BytesEqual(cseed, seed) {
 		panic(fmt.Errorf("Unable to crack 16-bit seed %v != %v\n", cseed, seed))
 	}
 	fmt.Printf("Cracked 16-bit seed %v == %v\n", cseed, seed)
