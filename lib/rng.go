@@ -93,3 +93,52 @@ func (r *MTRand) UnTemper(y uint32) uint32 {
 	y = 0xFFFFFFFF & y
 	return y
 }
+
+// Returns a stream function. The stream function returns a random
+// byte when invoked.
+//
+// The `seed` argument must be exactly bytes.
+func keystream(seed []byte) func() byte {
+	if len(seed) != 2 {
+		return nil
+	}
+
+	// Pack seed into a uint32
+	s := (uint32(seed[0]) << 8) ^ uint32(seed[1])
+
+	// Init MT19937.
+	mtR := new(MTRand)
+	mtR.Seed(s)
+
+	// Stream func.
+	n := uint32(0)
+	return func() byte {
+		if n == uint32(0) {
+			n = mtR.Extract()
+		}
+		r := byte(n & 0xFF) // Extract last 8 bits.
+		n = n >> 8          // Get rid of the last 8 bits.
+
+		return r
+	}
+}
+
+// XORs `stream` with the MT19937 keystream seeded with `seed`.
+func MTXORStream(stream, seed []byte) []byte {
+	if len(stream) == 0 {
+		return []byte{}
+	}
+	if len(seed) != 2 {
+		return nil
+	}
+
+	ks := keystream(seed)
+	if ks == nil {
+		return nil
+	}
+	s := make([]byte, 0)
+	for i := 0; i < len(stream); i++ {
+		s = append(s, stream[i]^ks())
+	}
+	return s
+}
