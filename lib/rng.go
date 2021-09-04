@@ -143,7 +143,9 @@ func MTXORStream(stream, seed []byte) []byte {
 	return s
 }
 
-func MTPasswordResetToken(seed uint32, length int) string {
+// Returns a "random" token of length `length` using MT19937 seeded
+// with `seed`.  The returned token is a hex string.
+func MTToken(seed uint32, length int) string {
 	if length < 16 {
 		length = 16 // Default length.
 	}
