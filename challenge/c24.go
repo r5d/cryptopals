@@ -5,6 +5,7 @@ package challenge
 
 import (
 	"fmt"
+	"time"
 
 	"ricketyspace.net/cryptopals/lib"
 )
@@ -44,7 +45,27 @@ func C24() {
 		panic(fmt.Errorf("Unable to crack 16-bit seed %v != %v\n", cseed, seed))
 	}
 	fmt.Printf("Cracked 16-bit seed %v == %v\n", cseed, seed)
+
+	// Part II: Check if password token is generated using MT19937
+	// seeded with current time.
+	tseed := uint32(time.Now().Unix() - lib.RandomInt(60, 86400))
+	token := lib.MTToken(tseed, 32)
+	guess := uint32(time.Now().Unix())
+	for guess > uint32(time.Now().Unix())-86400 { // Go back 24 hours.
+		if token == lib.MTToken(guess, len(token)/2) {
+			fmt.Printf("Token generated using MT19937 seeded"+
+				" with current time\n\tSeed: %v\n\tToken: %v\n",
+				guess, token)
+			return
+		}
+		guess -= 1
+	}
+	fmt.Printf("Token not generated using MT19937 seeded with current time\n")
+
 }
 
 // Output:
 // Cracked 16-bit seed [74 8] == [74 8]
+// Token generated using MT19937 seeded with current time
+//        Seed: 1630730057
+//        Token: 4b8dc62151d85802b7ce731b6b7b9a6e299740721a5555ed1f54eb9bc304a8b2
