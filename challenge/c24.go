@@ -38,34 +38,57 @@ func C24() {
 	plain := append(
 		lib.RandomBytesWithLengthBetween(8, 64),
 		lib.StrToBytes("AAAAAAAAAAAAAA")..., // 14 'A's.
-	) // Plaintext; last 14 characters known.
-	cipher := lib.MTXORStream(plain, seed) // Encrypt plaintext.
-	cseed := crack(cipher)                 // Try to crack seed
+	) // Plaintext; last 14 characters is known.
+	// Encrypt plaintext.
+	cipher := lib.MTXORStream(plain, seed)
+	// Try to crack seed
+	cseed := crack(cipher)
 	if !lib.BytesEqual(cseed, seed) {
-		panic(fmt.Errorf("Unable to crack 16-bit seed %v != %v\n", cseed, seed))
+		fmt.Printf("Error: %v != %v\n", cseed, seed)
+		return
 	}
 	fmt.Printf("Cracked 16-bit seed %v == %v\n", cseed, seed)
 
 	// Part II: Check if password token is generated using MT19937
 	// seeded with current time.
-	tseed := uint32(time.Now().Unix() - lib.RandomInt(60, 86400))
-	token := lib.MTToken(tseed, 32)
-	guess := uint32(time.Now().Unix())
-	for guess > uint32(time.Now().Unix())-86400 { // Go back 24 hours.
-		if token == lib.MTToken(guess, len(token)/2) {
-			fmt.Printf("Token generated using MT19937 seeded"+
-				" with current time\n\tSeed: %v\n\tToken: %v\n",
-				guess, token)
-			return
+	genPassToken := func(seed uint32, length int) []byte {
+		if length < 16 {
+			length = 16 // Default length.
 		}
-		guess -= 1
+
+		// Init MT19937.
+		mtR := new(lib.MTRand)
+		mtR.Seed(seed)
+
+		n := uint32(0)
+		t := make([]byte, 0) // Token in bytes.
+		for i := 0; i < length; i++ {
+			if n == uint32(0) {
+				n = mtR.Extract()
+			}
+			t = append(t, byte(n&0xFF)) // Extract last 8 bits.
+			n = n >> 8                  // Get rid of the last 8 bits.
+		}
+		return t
 	}
-	fmt.Printf("Token not generated using MT19937 seeded with current time\n")
+	crackPassToken := func(token []byte) {
+		g := uint32(time.Now().Unix())            // Guess
+		for g > uint32(time.Now().Unix())-86400 { // Go back 24 hours.
+			t := genPassToken(g, len(token))
+			if lib.BytesEqual(token, t) {
+				fmt.Printf("Token generated using MT19937 seeded"+
+					" with %v\n",
+					g)
+				return
+			}
+			g -= 1
+		}
+
+	}
+	crackPassToken(genPassToken(uint32(time.Now().Unix()-lib.RandomInt(60, 86400)), 32))
 
 }
 
 // Output:
-// Cracked 16-bit seed [74 8] == [74 8]
-// Token generated using MT19937 seeded with current time
-//        Seed: 1630730057
-//        Token: 4b8dc62151d85802b7ce731b6b7b9a6e299740721a5555ed1f54eb9bc304a8b2
+// Cracked 16-bit seed [46 80] == [46 80]
+// Token generated using MT19937 seeded with 1631200397
