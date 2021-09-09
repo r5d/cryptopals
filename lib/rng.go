@@ -143,26 +143,3 @@ func MTXORStream(stream, seed []byte) []byte {
 	return s
 }
 
-// Returns a "random" token of length `length` using MT19937 seeded
-// with `seed`.  The returned token is a hex string.
-func MTToken(seed uint32, length int) string {
-	if length < 16 {
-		length = 16 // Default length.
-	}
-
-	// Init MT19937.
-	mtR := new(MTRand)
-	mtR.Seed(seed)
-
-	n := uint32(0)
-	t := make([]byte, 0) // Token in bytes.
-	for i := 0; i < length; i++ {
-		if n == uint32(0) {
-			n = mtR.Extract()
-		}
-		t = append(t, byte(n&0xFF)) // Extract last 8 bits.
-		n = n >> 8                  // Get rid of the last 8 bits.
-	}
-
-	return BytesToHexStr(t) // Return token as a hex string.
-}
