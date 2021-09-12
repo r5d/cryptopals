@@ -57,7 +57,7 @@ func aesCipherCTR(in, key []byte, ctrFunc func() []byte) ([]byte, error) {
 			e = len(in)
 		}
 		c := in[s:e]
-		output = append(output, FixedXORBytes(aesCipher(ib, key)[0:len(c)], c)...)
+		output = append(output, FixedXORBytes(AESCipher(ib, key)[0:len(c)], c)...)
 	}
 	return output, nil
 }
@@ -74,7 +74,7 @@ func AESEncryptCBC(plain, key, iv []byte) []byte {
 		s := (i * 16)
 		e := (i * 16) + 16
 		p := plain[s:e]
-		c := aesCipher(FixedXORBytes(p, lc), key)
+		c := AESCipher(FixedXORBytes(p, lc), key)
 		output = append(output, c...)
 
 		lc = c
@@ -113,7 +113,7 @@ func AESEncryptECB(plain, key []byte) []byte {
 	for i := 0; i < iter; i++ {
 		s := (i * 16)
 		e := (i * 16) + 16
-		output = append(output, aesCipher(plain[s:e], key)...)
+		output = append(output, AESCipher(plain[s:e], key)...)
 	}
 
 	return output
@@ -136,7 +136,7 @@ func AESDecryptECB(cipher, key []byte) []byte {
 	return output
 }
 
-func aesCipher(in, ky []byte) []byte {
+func AESCipher(in, ky []byte) []byte {
 	nb := 4
 	nr := 10
 
