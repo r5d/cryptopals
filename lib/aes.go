@@ -91,7 +91,7 @@ func AESDecryptCBC(cipher, key, iv []byte) ([]byte, error) {
 		s := (i * 16)
 		e := (i * 16) + 16
 		c := cipher[s:e]
-		output = append(output, FixedXORBytes(aesInvCipher(c, key), lc)...)
+		output = append(output, FixedXORBytes(AESInvCipher(c, key), lc)...)
 
 		lc = c
 	}
@@ -127,7 +127,7 @@ func AESDecryptECB(cipher, key []byte) []byte {
 	for i := 0; i < iter; i++ {
 		s := (i * 16)
 		e := (i * 16) + 16
-		output = append(output, aesInvCipher(cipher[s:e], key)...)
+		output = append(output, AESInvCipher(cipher[s:e], key)...)
 	}
 
 	// Undo padding
@@ -171,7 +171,7 @@ func AESCipher(in, ky []byte) []byte {
 	return output
 }
 
-func aesInvCipher(in, ky []byte) []byte {
+func AESInvCipher(in, ky []byte) []byte {
 	nb := 4
 	nr := 10
 
