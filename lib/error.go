@@ -5,7 +5,7 @@ package lib
 
 // CryptoPals Error
 type CPError struct {
-	err string
+	Err string
 }
 
-func (e CPError) Error() string { return e.err }
+func (e CPError) Error() string { return e.Err }
