@@ -207,3 +207,8 @@ func Sha1(m []byte) []byte {
 
 	return d
 }
+
+func Sha1Mac(secret, msg []byte) []byte {
+	return Sha1(append(secret, msg...))
+}
+
