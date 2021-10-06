@@ -212,3 +212,9 @@ func Sha1Mac(secret, msg []byte) []byte {
 	return Sha1(append(secret, msg...))
 }
 
+func Sha1MacVerify(secret, msg, mac []byte) bool {
+	if BytesEqual(Sha1(append(secret, msg...)), mac) {
+		return true
+	}
+	return false
+}
