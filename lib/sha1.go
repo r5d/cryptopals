@@ -6,8 +6,12 @@ package lib
 // SHA-1 implementation.
 // Reference https://csrc.nist.gov/publications/detail/fips/180/4/final
 
+type Sha1 struct {
+	hvs []uint32
+}
+
 // Initial hash value.
-var sha1IHashValue []uint32 = []uint32{
+var sha1IHashValues []uint32 = []uint32{
 	0x67452301,
 	0xefcdab89,
 	0x98badcfe,
@@ -149,7 +153,19 @@ func sha1MessageSchedule(mb []uint32) []uint32 {
 	return w
 }
 
-func Sha1(m []byte) []byte {
+func (s *Sha1) Init(hvs []uint32) {
+	// Set Initial Hash Values.
+	h := make([]uint32, 5)
+	if len(hvs) == 5 {
+		copy(h, hvs)
+		s.hvs = h
+	} else {
+		copy(h, sha1IHashValues)
+		s.hvs = h
+	}
+}
+
+func (s *Sha1) Hash(m []byte) []byte {
 	// Pad message.
 	pm := sha1Pad(m)
 
@@ -158,7 +174,7 @@ func Sha1(m []byte) []byte {
 
 	// Initialize hash values.
 	h := make([]uint32, 5)
-	copy(h, sha1IHashValue) // Initial hash values.
+	copy(h, s.hvs) // Initial hash values.
 
 	// Process each message block.
 	for _, mb := range mbs {
@@ -208,12 +224,12 @@ func Sha1(m []byte) []byte {
 	return d
 }
 
-func Sha1Mac(secret, msg []byte) []byte {
-	return Sha1(append(secret, msg...))
+func (s *Sha1) Mac(secret, msg []byte) []byte {
+	return s.Hash(append(secret, msg...))
 }
 
-func Sha1MacVerify(secret, msg, mac []byte) bool {
-	if BytesEqual(Sha1(append(secret, msg...)), mac) {
+func (s *Sha1) MacVerify(secret, msg, mac []byte) bool {
+	if BytesEqual(s.Hash(append(secret, msg...)), mac) {
 		return true
 	}
 	return false

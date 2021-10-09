@@ -35,11 +35,14 @@ I'm pushin' away, I'm pushin' away
 Yeah I'm pushin' away, pushin' away`)
 	sec := lib.StrToBytes("Milk Records")
 
+	// Init SHA1
+	sha1 := lib.Sha1{}
+
 	// Generate SHA1 MAC.
-	mac := lib.Sha1Mac(sec, msg)
+	mac := sha1.Mac(sec, msg)
 
 	// Verify.
-	if lib.Sha1MacVerify(sec, msg, mac) != true {
+	if sha1.MacVerify(sec, msg, mac) != true {
 		fmt.Printf("Error: Sha1Mac verification failed!\n")
 		return
 	}
@@ -48,7 +51,7 @@ Yeah I'm pushin' away, pushin' away`)
 	msg[42] = byte(42)
 
 	// Verify that SHA1 MAC fails
-	if lib.Sha1MacVerify(sec, msg, mac) != false {
+	if sha1.MacVerify(sec, msg, mac) != false {
 		fmt.Printf("Error: Sha1Mac verification success!\n")
 		return
 	}
