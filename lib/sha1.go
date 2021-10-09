@@ -234,3 +234,44 @@ func (s *Sha1) MacVerify(secret, msg, mac []byte) bool {
 	}
 	return false
 }
+
+// Returns Merkle–Damgård padding in bytes for message `m`
+func MDPadding(m []byte) []byte {
+	l := len(m) * 8 // msg size in bits
+
+	// Reckon value of `k`
+	k := 0
+	for ((l + 1 + k) % 512) != 448 {
+		k += 1
+	}
+
+	// Initialize padding bytes
+	pbs := make([]byte, 0)
+
+	// Add bit `1` as byte block.
+	pbs = append(pbs, 0x80)
+	f := 7 // unclaimed bits in last byte of `pbs`
+
+	// Add `k` bit `0`s
+	for i := 0; i < k; i++ {
+		if f == 0 {
+			pbs = append(pbs, 0x0)
+			f = 8
+		}
+		f = f - 1
+	}
+
+	// Add `l` in a 64 bit block in `pbs`
+	l64 := uint64(l)
+	b64 := make([]byte, 8) // last 64-bits
+	for i := 7; i >= 0; i-- {
+		// Get 8 last bits.
+		b64[i] = byte(l64 & 0xFF)
+
+		// Get rid of the last 8 bits.
+		l64 = l64 >> 8
+	}
+	pbs = append(pbs, b64...)
+
+	return pbs
+}
