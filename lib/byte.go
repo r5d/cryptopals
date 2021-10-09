@@ -43,3 +43,25 @@ func ByteIsUpper(b byte) bool {
 func BytesEqual(a, b []byte) bool {
 	return BlocksEqual(a, b)
 }
+
+func BytesToUint32s(bs []byte) []uint32 {
+	u32s := make([]uint32, 0)
+
+	ui := uint32(0) // 32-bit word.
+	ab := uint(32)  // Available bits in ui.
+	for _, b := range bs {
+		if ab == 0 {
+			// ui full; add to u32s and reset ui.
+			u32s = append(u32s, ui)
+			ui = uint32(0)
+			ab = 32
+		}
+		// Stuff byte into ui.
+		ui = ui | uint32(b)<<(ab-8)
+		ab = ab - 8
+	}
+	if ui > 0 {
+		u32s = append(u32s, ui)
+	}
+	return u32s
+}
