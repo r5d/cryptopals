@@ -7,7 +7,9 @@ package lib
 // Reference https://csrc.nist.gov/publications/detail/fips/180/4/final
 
 type Sha1 struct {
-	hvs []uint32
+	hvs    []uint32
+	Msg    []byte
+	MsgLen int
 }
 
 // Initial hash value.
@@ -70,18 +72,6 @@ func sha1KT(t int) uint32 {
 	}
 }
 
-// SHA-1 - Pad message such that its length is a multiple of 512.
-func sha1Pad(m []byte) []byte {
-	// Initialize padded message
-	pm := make([]byte, len(m))
-	copy(pm, m)
-
-	// Add padding.
-	pm = append(pm, MDPadding(m)...)
-
-	return pm
-}
-
 // Converts padded messages bytes `pm` into 512-bit message blocks.
 // Each 512-bit block is an array of 16 32-bit words.
 func sha1MessageBlocks(pm []byte) [][]uint32 {
@@ -135,9 +125,26 @@ func (s *Sha1) Init(hvs []uint32) {
 	}
 }
 
-func (s *Sha1) Hash(m []byte) []byte {
+func (s *Sha1) Message(m []byte) {
+	s.Msg = m
+	s.MsgLen = len(m)
+}
+
+// SHA-1 - Pad message such that its length is a multiple of 512.
+func (s *Sha1) Pad() []byte {
+	// Initialize padded message
+	pm := make([]byte, len(s.Msg))
+	copy(pm, s.Msg)
+
+	// Add padding.
+	pm = append(pm, MDPadding(s.MsgLen)...)
+
+	return pm
+}
+
+func (s *Sha1) Hash() []byte {
 	// Pad message.
-	pm := sha1Pad(m)
+	pm := s.Pad()
 
 	// Break into message blocks.
 	mbs := sha1MessageBlocks(pm)
@@ -195,19 +202,22 @@ func (s *Sha1) Hash(m []byte) []byte {
 }
 
 func (s *Sha1) Mac(secret, msg []byte) []byte {
-	return s.Hash(append(secret, msg...))
+	s.Message(append(secret, msg...))
+	return s.Hash()
 }
 
 func (s *Sha1) MacVerify(secret, msg, mac []byte) bool {
-	if BytesEqual(s.Hash(append(secret, msg...)), mac) {
+	s.Message(append(secret, msg...))
+	if BytesEqual(s.Hash(), mac) {
 		return true
 	}
 	return false
 }
 
-// Returns Merkle–Damgård padding in bytes for message `m`
-func MDPadding(m []byte) []byte {
-	l := len(m) * 8 // msg size in bits
+// Returns Merkle–Damgård padding in bytes for length of mesage `l`
+// bytes.
+func MDPadding(l int) []byte {
+	l = l * 8 // msg size in bits
 
 	// Reckon value of `k`
 	k := 0
