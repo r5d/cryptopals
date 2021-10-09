@@ -37,6 +37,7 @@ Yeah I'm pushin' away, pushin' away`)
 
 	// Init SHA1
 	sha1 := lib.Sha1{}
+	sha1.Init([]uint32{})
 
 	// Generate SHA1 MAC.
 	mac := sha1.Mac(sec, msg)
