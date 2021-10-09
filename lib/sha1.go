@@ -72,42 +72,12 @@ func sha1KT(t int) uint32 {
 
 // SHA-1 - Pad message such that its length is a multiple of 512.
 func sha1Pad(m []byte) []byte {
-	l := len(m) * 8 // msg size in bits
-
-	// Reckon value of `k`
-	k := 0
-	for ((l + 1 + k) % 512) != 448 {
-		k += 1
-	}
-
 	// Initialize padded message
 	pm := make([]byte, len(m))
 	copy(pm, m)
 
-	// Add bit `1` as byte block.
-	pm = append(pm, 0x80)
-	f := 7 // unclaimed bits in last byte of `pm`
-
-	// Add `k` bit `0`s
-	for i := 0; i < k; i++ {
-		if f == 0 {
-			pm = append(pm, 0x0)
-			f = 8
-		}
-		f = f - 1
-	}
-
-	// Add `l` in a 64 bit block in `pm`
-	l64 := uint64(l)
-	b64 := make([]byte, 8) // last 64-bits
-	for i := 7; i >= 0; i-- {
-		// Get 8 last bits.
-		b64[i] = byte(l64 & 0xFF)
-
-		// Get rid of the last 8 bits.
-		l64 = l64 >> 8
-	}
-	pm = append(pm, b64...)
+	// Add padding.
+	pm = append(pm, MDPadding(m)...)
 
 	return pm
 }
