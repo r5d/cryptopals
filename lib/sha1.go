@@ -21,25 +21,6 @@ var sha1IHashValues []uint32 = []uint32{
 	0xc3d2e1f0,
 }
 
-// (a + b + ...) mod 2^32
-func sha1Add(n ...uint32) uint32 {
-	sum := uint64(0)
-	for _, v := range n {
-		sum += uint64(v)
-	}
-	return uint32(sum & 0xFFFFFFFF)
-}
-
-// Circular Right Shift
-func sha1Rotr(x uint32, n uint) uint32 {
-	return (x >> n) | (x << (32 - n))
-}
-
-// Circular Left Shift
-func sha1Rotl(x uint32, n uint) uint32 {
-	return (x << n) | (x >> (32 - n))
-}
-
 // SHA-1 - Function f_t(x, y, z)
 func sha1FT(t int, x, y, z uint32) uint32 {
 	switch {
@@ -83,7 +64,7 @@ func sha1MessageSchedule(mb []uint32) []uint32 {
 		if t <= 15 {
 			w = append(w, mb[t])
 		} else {
-			w = append(w, sha1Rotl(w[t-3]^w[t-8]^w[t-14]^w[t-16], 1))
+			w = append(w, shaRotl(w[t-3]^w[t-8]^w[t-14]^w[t-16], 1))
 		}
 	}
 	return w
@@ -142,21 +123,21 @@ func (s *Sha1) Hash() []byte {
 		e := h[4]
 
 		for t := 0; t <= 79; t++ {
-			tmp := sha1Add(sha1Rotl(a, 5), sha1FT(t, b, c, d),
+			tmp := shaAdd(shaRotl(a, 5), sha1FT(t, b, c, d),
 				e, sha1KT(t), w[t])
 			e = d
 			d = c
-			c = sha1Rotl(b, 30)
+			c = shaRotl(b, 30)
 			b = a
 			a = tmp
 		}
 
 		// Compute intermediate hash values.
-		h[0] = sha1Add(a, h[0])
-		h[1] = sha1Add(b, h[1])
-		h[2] = sha1Add(c, h[2])
-		h[3] = sha1Add(d, h[3])
-		h[4] = sha1Add(e, h[4])
+		h[0] = shaAdd(a, h[0])
+		h[1] = shaAdd(b, h[1])
+		h[2] = shaAdd(c, h[2])
+		h[3] = shaAdd(d, h[3])
+		h[4] = shaAdd(e, h[4])
 	}
 
 	// Slurp sha1 digest from hash values.
