@@ -34,11 +34,11 @@ func HexStrToAsciiStr(h string) string {
 		return a
 	}
 	if lh == 1 {
-		return string(HexCharToDec(h[0]))
+		return string(byte(HexCharToDec(h[0])))
 	}
 
 	for i := 0; i < lh; i += 2 {
-		b := HexCharToDec(h[i])<<4 | HexCharToDec(h[i+1])
+		b := byte(HexCharToDec(h[i])<<4 | HexCharToDec(h[i+1]))
 		a += string(b)
 	}
 	return a
