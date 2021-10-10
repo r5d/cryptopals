@@ -3,9 +3,7 @@
 
 package lib
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestSha1Hash(t *testing.T) {
 	sha1 := Sha1{}
