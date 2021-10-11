@@ -53,7 +53,7 @@ func md4RoundThreeFunc(a, b, c, d, x uint32, s uint) uint32 {
 	return a
 }
 
-func md4Padding(l int) []byte {
+func Md4Padding(l int) []byte {
 	l = l * 8 // msg size in bits
 
 	// Reckon value of `k`
@@ -139,7 +139,7 @@ func (md *Md4) Pad() []byte {
 	copy(pm, md.Msg)
 
 	// Add padding.
-	pm = append(pm, md4Padding(md.MsgLen)...)
+	pm = append(pm, Md4Padding(md.MsgLen)...)
 
 	return pm
 }
