@@ -56,3 +56,23 @@ func TestMd4Hash(t *testing.T) {
 	}
 
 }
+
+func TestMd4MacVerify(t *testing.T) {
+	md4 := Md4{}
+	md4.Init([]uint32{})
+
+	sec := StrToBytes("honey")
+	msg := StrToBytes("abc")
+
+	// Test Mac
+	mac := md4.Mac(sec, msg)
+	e := "22fd3b98ca4a901fec432ed2c49d3f83" // Expected Mac
+	if BytesToHexStr(mac) != e {
+		t.Errorf("Error: md5 mac failed %x != %s\n", mac, e)
+	}
+
+	// Test MacVerify.
+	if !md4.MacVerify(sec, msg, mac) {
+		t.Errorf("Error: mac verification failed\n")
+	}
+}

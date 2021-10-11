@@ -251,3 +251,16 @@ func (md *Md4) Hash() []byte {
 
 	return d
 }
+
+func (md *Md4) Mac(secret, msg []byte) []byte {
+	md.Message(append(secret, msg...))
+	return md.Hash()
+}
+
+func (md *Md4) MacVerify(secret, msg, mac []byte) bool {
+	md.Message(append(secret, msg...))
+	if BytesEqual(md.Hash(), mac) {
+		return true
+	}
+	return false
+}
