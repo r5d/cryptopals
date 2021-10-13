@@ -236,3 +236,28 @@ func (s *Sha1) MacVerify(secret, msg, mac []byte) bool {
 	}
 	return false
 }
+
+// HMAC-SHA1.
+func HmacSha1(key, msg []byte) []byte {
+	// Initialize SHA-1 object.
+	sha1 := Sha1{}
+	sha1.Init([]uint32{})
+
+	// Modify key based on it's size.
+	if len(key) > 64 { // > blocksize (64 bytes)
+		sha1.Message(key)
+		key = sha1.Hash()
+	}
+	if len(key) < 64 { // < blocksize (64 bytes)
+		// Pad with zeroes up to 64 bytes.
+		key = append(key, make([]byte, 64-len(key))...)
+	}
+
+	// Outer padded key.
+	opk := FixedXORBytes(key, FillBytes(0x5c, 64))
+
+	// Inner padded key.
+	ipk := FixedXORBytes(key, FillBytes(0x36, 64))
+
+	return sha1.Mac(opk, sha1.Mac(ipk, msg))
+}
