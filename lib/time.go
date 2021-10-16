@@ -9,3 +9,8 @@ import "time"
 func SleepRandom(min, max time.Duration) {
 	time.Sleep(time.Duration(RandomInt(int64(min), int64(max))))
 }
+
+// Sleep for `d` nano seconds.
+func Sleep(d time.Duration) {
+	time.Sleep(d)
+}
