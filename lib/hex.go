@@ -48,7 +48,7 @@ func HexStrToAsciiStr(h string) string {
 func HexStrToBytes(h string) []byte {
 	lh := len(h)
 
-	if lh < 1 {
+	if lh < 1 || lh%2 != 0 {
 		return []byte{}
 	}
 	if lh == 1 {
