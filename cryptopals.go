@@ -10,6 +10,7 @@ import (
 )
 
 var c = flag.Int("c", 0, "Challenge to run")
+var s = flag.Bool("s", false, "Start HTTP server for a challenge")
 
 func init() {
 	flag.Parse()
@@ -79,5 +80,7 @@ func main() {
 		challenge.C29()
 	case 30:
 		challenge.C30()
+	case 31:
+		challenge.C31(*s)
 	}
 }
