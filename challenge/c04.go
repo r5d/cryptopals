@@ -1,4 +1,4 @@
-// Copyright © 2020 rsiddharth <s@ricketyspace.net>
+// Copyright © 2021 siddharth <s@ricketyspace.net>
 // SPDX-License-Identifier: ISC
 
 package challenge
