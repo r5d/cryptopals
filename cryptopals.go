@@ -84,5 +84,7 @@ func main() {
 		challenge.C31(*s)
 	case 32:
 		challenge.C32(*s)
+	case 33:
+		challenge.C33()
 	}
 }
