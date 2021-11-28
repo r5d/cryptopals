@@ -16,6 +16,14 @@ install it with:
 go get ricketyspace.net/cryptopals
 ```
 
+or
+
+```
+go install ricketyspace.net/cryptopals@latest
+```
+
+if using `go >= 1.17`.
+
 run challenges with:
 
 ```bash
