@@ -153,3 +153,31 @@ func StrHas(s, n string) bool {
 	}
 	return false
 }
+
+// Converts a string to an integer.
+func StrToNum(s string) (int, error) {
+	var negative bool
+	var n int
+
+	if len(s) < 1 {
+		return 0, CPError{"invalid number"}
+	}
+	if s[0] == '-' {
+		negative = true
+		s = s[1:]
+	}
+	u := 1
+	for i := len(s) - 1; i >= 0; i-- {
+		b := s[i]
+		if b >= '0' && b <= '9' {
+			n += int(b-48) * u
+			u *= 10
+		} else {
+			return 0, CPError{"invalid number"}
+		}
+	}
+	if negative {
+		n *= -1
+	}
+	return n, nil
+}
