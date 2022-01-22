@@ -63,7 +63,10 @@ func C34(args []string) {
 	// Encipher using AES-CBC.
 	encipher := func(skey *big.Int, msg string) (string, error) {
 		// Make key out of DH sesssion key.
-		skeyb := skey.Bytes()
+		sha1 := lib.Sha1{}
+		sha1.Init([]uint32{})
+		sha1.Message(skey.Bytes())
+		skeyb := sha1.Hash()
 		if len(skeyb) < 16 {
 			// Pad it to 16 bytes.
 			skeyb = append(skeyb, make([]byte, 16-len(skeyb))...)
@@ -89,7 +92,10 @@ func C34(args []string) {
 	// Decipher using AES-CBC.
 	decipher := func(skey *big.Int, packet string) (string, error) {
 		// Make key out of DH sesssion key.
-		skeyb := skey.Bytes()
+		sha1 := lib.Sha1{}
+		sha1.Init([]uint32{})
+		sha1.Message(skey.Bytes())
+		skeyb := sha1.Hash()
 		if len(skeyb) < 16 {
 			// Pad it to 16 bytes.
 			skeyb = append(skeyb, make([]byte, 16-len(skeyb))...)
