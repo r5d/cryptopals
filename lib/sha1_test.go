@@ -41,6 +41,15 @@ func TestSha1Hash(t *testing.T) {
 	if BytesToHexStr(h) != e {
 		t.Errorf("sha1 test 3 failed: %x != %s\n", h, e)
 	}
+
+	// Test 4
+	m = ""
+	sha1.Message(StrToBytes(m))
+	h = sha1.Hash()
+	e = "da39a3ee5e6b4b0d3255bfef95601890afd80709" // Expected hash.
+	if BytesToHexStr(h) != e {
+		t.Errorf("sha1 test 3 failed: %x != %s\n", h, e)
+	}
 }
 
 // Test cases from RFC 2202
