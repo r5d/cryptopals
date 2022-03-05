@@ -55,7 +55,7 @@ func sha1KT(t int) uint32 {
 
 // Converts padded messages bytes `pm` into 512-bit message blocks.
 // Each 512-bit block is an array of 16 32-bit words.
-func sha1MessageBlocks(pm []byte) [][]uint32 {
+func shaMessageBlocks(pm []byte) [][]uint32 {
 	// Break into 512-bit blocks
 	bs := BreakIntoBlocks(pm, 64)
 
@@ -170,7 +170,7 @@ func (s *Sha1) Hash() []byte {
 	pm := s.Pad()
 
 	// Break into message blocks.
-	mbs := sha1MessageBlocks(pm)
+	mbs := shaMessageBlocks(pm)
 
 	// Initialize hash values.
 	h := make([]uint32, 5)
