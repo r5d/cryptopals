@@ -9,7 +9,7 @@ fmt:
 .PHONY: fmt
 
 test:
-	go test ${MOD}/lib
+	go test ${ARGS} ${MOD}/lib
 .PHONY: test
 
 clean:
