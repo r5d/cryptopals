@@ -21,3 +21,8 @@ func shaRotr(x uint32, n uint) uint32 {
 func shaRotl(x uint32, n uint) uint32 {
 	return (x << n) | (x >> (32 - n))
 }
+
+// Right Shift
+func shaShr(x uint32, n uint) uint32 {
+	return x >> n
+}
