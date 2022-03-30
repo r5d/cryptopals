@@ -190,3 +190,41 @@ func (s *Sha256) Hash() []byte {
 
 	return d
 }
+
+func (s *Sha256) Mac(secret, msg []byte) []byte {
+	s.Message(append(secret, msg...))
+	return s.Hash()
+}
+
+func (s *Sha256) MacVerify(secret, msg, mac []byte) bool {
+	s.Message(append(secret, msg...))
+	if BytesEqual(s.Hash(), mac) {
+		return true
+	}
+	return false
+}
+
+// HMAC-SHA256.
+func HmacSha256(key, msg []byte) []byte {
+	// Initialize SHA-256 object.
+	sha := Sha256{}
+	sha.Init([]uint32{})
+
+	// Modify key based on it's size.
+	if len(key) > 64 { // > blocksize (64 bytes)
+		sha.Message(key)
+		key = sha.Hash()
+	}
+	if len(key) < 64 { // < blocksize (64 bytes)
+		// Pad with zeroes up to 64 bytes.
+		key = append(key, make([]byte, 64-len(key))...)
+	}
+
+	// Outer padded key.
+	opk := FixedXORBytes(key, FillBytes(0x5c, 64))
+
+	// Inner padded key.
+	ipk := FixedXORBytes(key, FillBytes(0x36, 64))
+
+	return sha.Mac(opk, sha.Mac(ipk, msg))
+}
