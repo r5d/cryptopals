@@ -170,6 +170,35 @@ func (u *SRPUser) EphemeralKeyPub() (*big.Int, error) {
 	return pub, nil
 }
 
+func (u *SRPUser) SetScramblingParam(a *big.Int) error {
+	b, err := u.EphemeralKeyPub()
+	if err != nil {
+		return err
+	}
+	bb := b.Bytes()
+	ab := a.Bytes()
+
+	// Make M=A+B
+	m := make([]byte, 0)
+	m = append(m, ab...)
+	m = append(m, bb...)
+	if len(m) != (len(ab) + len(bb)) {
+		return CPError{"length of m is incorrect"}
+	}
+
+	// Hash M
+	u.h.Message(m)
+	h := u.h.Hash()
+
+	// Set scrambling paramter u
+	u.u = new(big.Int)
+	u.u.SetBytes(h)
+	if u.u.Cmp(big.NewInt(0)) != 1 {
+		return CPError{"u is invalid"}
+	}
+	return nil
+}
+
 func NewSRPClientSession(n, g, k, ident string) (*SRPClientSession, error) {
 	var ok bool
 
@@ -211,4 +240,33 @@ func (s *SRPClientSession) EphemeralKeyPub() (*big.Int, error) {
 	pub.Exp(s.g, s.a, s.n)
 
 	return pub, nil
+}
+
+func (s *SRPClientSession) SetScramblingParam(b *big.Int) error {
+	a, err := s.EphemeralKeyPub()
+	if err != nil {
+		return err
+	}
+	ab := a.Bytes()
+	bb := b.Bytes()
+
+	// Make M=A+B
+	m := make([]byte, 0)
+	m = append(m, ab...)
+	m = append(m, bb...)
+	if len(m) != (len(ab) + len(bb)) {
+		return CPError{"length of m is incorrect"}
+	}
+
+	// Hash M
+	s.h.Message(m)
+	h := s.h.Hash()
+
+	// Set scrambling paramter u
+	s.u = new(big.Int)
+	s.u.SetBytes(h)
+	if s.u.Cmp(big.NewInt(0)) != 1 {
+		return CPError{"u is invalid"}
+	}
+	return nil
 }
