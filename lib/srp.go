@@ -78,6 +78,8 @@ type SRPClientSession struct {
 	// Multipier parameter. Client and server agree upon the value
 	// of N.
 	k *big.Int
+	// Hashing object for H() function.
+	h Sha256
 	// User's email address
 	ident string
 	// Scrambling parameter.
@@ -130,4 +132,32 @@ func NewSRPUser(n, g, k, ident, pass string) (*SRPUser, error) {
 	user.v.Exp(user.g, user.x, user.n)
 
 	return user, nil
+}
+
+func NewSRPClientSession(n, g, k, ident string) (*SRPClientSession, error) {
+	var ok bool
+
+	session := new(SRPClientSession)
+	session.n, ok = new(big.Int).SetString(StripSpaceChars(n), 16)
+	if !ok {
+		return nil, CPError{"n is invalid"}
+	}
+	session.g, ok = new(big.Int).SetString(StripSpaceChars(g), 16)
+	if !ok {
+		return nil, CPError{"g is invalid"}
+	}
+	session.k, ok = new(big.Int).SetString(StripSpaceChars(k), 16)
+	if !ok {
+		return nil, CPError{"k is invalid"}
+	}
+	session.ident = ident
+
+	// Initialize hashing object.
+	session.h = Sha256{}
+	session.h.Init([]uint32{})
+
+	// Generate secret ephemeral value.
+	session.a = big.NewInt(RandomInt(1, 10000000))
+
+	return session, nil
 }
