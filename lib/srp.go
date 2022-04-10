@@ -134,6 +134,42 @@ func NewSRPUser(n, g, k, ident, pass string) (*SRPUser, error) {
 	return user, nil
 }
 
+func (u *SRPUser) EphemeralKeyGen() {
+	for {
+		u.b = big.NewInt(RandomInt(1, 10000000))
+		if u.b.Cmp(big.NewInt(0)) == 1 {
+			break
+		}
+	}
+}
+
+func (u *SRPUser) EphemeralKeyPub() (*big.Int, error) {
+	if u.k == nil || u.k.Cmp(big.NewInt(0)) != 1 {
+		return nil, CPError{"k is not initialized"}
+	}
+	if u.v == nil || u.v.Cmp(big.NewInt(0)) != 1 {
+		return nil, CPError{"v is not initialized"}
+	}
+	if u.g == nil || u.g.Cmp(big.NewInt(0)) != 1 {
+		return nil, CPError{"g is not initialized"}
+	}
+	if u.b == nil || u.b.Cmp(big.NewInt(0)) != 1 {
+		return nil, CPError{"b is not initialized"}
+	}
+
+	kv := new(big.Int)
+	kv.Mul(u.k, u.v)
+
+	gb := new(big.Int)
+	gb.Exp(u.g, u.b, u.n)
+
+	// pub is 'B'
+	pub := new(big.Int)
+	pub.Add(kv, gb)
+
+	return pub, nil
+}
+
 func NewSRPClientSession(n, g, k, ident string) (*SRPClientSession, error) {
 	var ok bool
 
@@ -160,4 +196,19 @@ func NewSRPClientSession(n, g, k, ident string) (*SRPClientSession, error) {
 	session.a = big.NewInt(RandomInt(1, 10000000))
 
 	return session, nil
+}
+
+func (s *SRPClientSession) EphemeralKeyPub() (*big.Int, error) {
+	if s.g == nil || s.g.Cmp(big.NewInt(0)) != 1 {
+		return nil, CPError{"g is not initialized"}
+	}
+	if s.a == nil || s.a.Cmp(big.NewInt(0)) != 1 {
+		return nil, CPError{"a is not initialized"}
+	}
+
+	// pub is 'A'
+	pub := new(big.Int)
+	pub.Exp(s.g, s.a, s.n)
+
+	return pub, nil
 }
