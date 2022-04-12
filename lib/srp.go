@@ -199,6 +199,30 @@ func (u *SRPUser) SetScramblingParam(a *big.Int) error {
 	return nil
 }
 
+func (u *SRPUser) ComputeSessionKey(a *big.Int) error {
+	if a.Cmp(big.NewInt(0)) != 1 {
+		return CPError{"a is invalid"}
+	}
+
+	// v^u
+	vu := new(big.Int)
+	vu.Exp(u.v, u.u, u.n)
+
+	// S = (A * v^u)  ^ b
+	s := new(big.Int)
+	s.Mul(a, vu)
+	s.Exp(s, u.b, u.n)
+	sb := s.Bytes()
+
+	// K = H(S)
+	m := make([]byte, 0)
+	m = append(m, sb...)
+	u.h.Message(m)
+	u.sk = u.h.Hash()
+
+	return nil
+}
+
 func NewSRPClientSession(n, g, k, ident string) (*SRPClientSession, error) {
 	var ok bool
 
@@ -268,5 +292,58 @@ func (s *SRPClientSession) SetScramblingParam(b *big.Int) error {
 	if s.u.Cmp(big.NewInt(0)) != 1 {
 		return CPError{"u is invalid"}
 	}
+	return nil
+}
+
+func (s *SRPClientSession) ComputeSessionKey(salt []byte,
+	pass string, b *big.Int) error {
+	if len(salt) < 1 {
+		return CPError{"salt invalid"}
+	}
+	if len(pass) < 1 {
+		return CPError{"pass invalid"}
+	}
+
+	// salt+pass
+	sp := make([]byte, 0)
+	copy(sp, salt)
+	sp = append(sp, StrToBytes(pass)...)
+
+	// x = H(salt+pass)
+	x := new(big.Int)
+	s.h.Message(sp)
+	x.SetBytes(s.h.Hash())
+
+	// g^x
+	gx := new(big.Int)
+	gx.Exp(s.g, x, s.n)
+
+	// k * g^x
+	kgx := new(big.Int)
+	kgx.Mul(s.k, gx)
+
+	// B - (k * g^x)
+	bkgx := new(big.Int)
+	bkgx.Sub(b, kgx)
+
+	// u * x
+	ux := new(big.Int)
+	ux.Mul(s.u, x)
+
+	// a + u*x
+	aux := new(big.Int)
+	aux.Add(s.a, ux)
+
+	// S = (B - (k * g^x)) ^ (a + u*x)
+	sec := new(big.Int)
+	sec.Exp(bkgx, aux, s.n)
+	sb := sec.Bytes()
+
+	// K = H(S)
+	m := make([]byte, 0)
+	m = append(m, sb...)
+	s.h.Message(m)
+	s.sk = s.h.Hash()
+
 	return nil
 }
