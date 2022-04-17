@@ -334,4 +334,17 @@ func TestSRPSessionKey(t *testing.T) {
 			" server_sk(%v): client_sk(%v)", user.sk, session.sk)
 		return
 	}
+
+	// Generate MAC of client session's session key
+	sMac, err := session.SessionKeyMac(user.salt)
+	if err != nil {
+		t.Errorf("unable to generate client session's mac: %v", err)
+		return
+	}
+
+	// Verify MAC with server.
+	if !user.SessionKeyMacVerify(sMac) {
+		t.Errorf("client session mac verify failed: %v", err)
+		return
+	}
 }

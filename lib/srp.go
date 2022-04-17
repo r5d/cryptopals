@@ -223,6 +223,10 @@ func (u *SRPUser) ComputeSessionKey(a *big.Int) error {
 	return nil
 }
 
+func (u *SRPUser) SessionKeyMacVerify(mac []byte) bool {
+	return u.h.MacVerify(u.salt, u.sk, mac)
+}
+
 func NewSRPClientSession(n, g, k, ident string) (*SRPClientSession, error) {
 	var ok bool
 
@@ -346,4 +350,14 @@ func (s *SRPClientSession) ComputeSessionKey(salt []byte,
 	s.sk = s.h.Hash()
 
 	return nil
+}
+
+func (s *SRPClientSession) SessionKeyMac(salt []byte) ([]byte, error) {
+	if len(s.sk) < 1 {
+		return nil, CPError{"sk is invalid"}
+	}
+	if len(salt) < 1 {
+		return nil, CPError{"salt is invalid"}
+	}
+	return s.h.Mac(salt, s.sk), nil
 }
