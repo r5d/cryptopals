@@ -90,5 +90,7 @@ func main() {
 		challenge.C34(flag.Args())
 	case 35:
 		challenge.C35(flag.Args())
+	case 36:
+		challenge.C36(flag.Args())
 	}
 }
