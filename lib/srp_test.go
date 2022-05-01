@@ -8,6 +8,55 @@ import (
 	"testing"
 )
 
+func TestSRPServerRegisterUser(t *testing.T) {
+	n := "7"
+	g := "2"
+	k := "3"
+
+	bobIdent := "bob@ricketyspace.net"
+	bobPass := "d59d6c93af0f37f272d924979"
+	bob, err := NewSRPUser(n, g, k, bobIdent, bobPass)
+
+	aliceIdent := "alice@ricketyspace.net"
+	alicePass := "5ae262bcfaf6b4de5a3edc9ae"
+	alice, err := NewSRPUser(n, g, k, aliceIdent, alicePass)
+
+	server := new(SRPServer)
+	err = server.RegisterUser(bob)
+	if err != nil {
+		t.Errorf("registering bob: %v", err)
+	}
+	if len(server.users) != 1 {
+		t.Errorf("server has %v users", len(server.users))
+	}
+	err = server.RegisterUser(alice)
+	if err != nil {
+		t.Errorf("registering alice: %v", err)
+	}
+	if len(server.users) != 2 {
+		t.Errorf("server has %v users", len(server.users))
+	}
+
+	err = server.RegisterUser(bob)
+	if err == nil {
+		t.Errorf("server registered bob again")
+		return
+	}
+	if err.Error() != "user already registered" {
+		t.Errorf("registration message: %v", err)
+		return
+	}
+	err = server.RegisterUser(alice)
+	if err == nil {
+		t.Errorf("server registered alice again")
+		return
+	}
+	if err.Error() != "user already registered" {
+		t.Errorf("registration message: %v", err)
+		return
+	}
+}
+
 func TestNewSRPUser(t *testing.T) {
 	n := StripSpaceChars(
 		`ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024

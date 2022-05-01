@@ -30,7 +30,7 @@ import "math/big"
 
 // SRP Server.
 type SRPServer struct {
-	users []SRPUser
+	users []*SRPUser
 }
 
 // Registered user on the SRP server.
@@ -88,6 +88,16 @@ type SRPClientSession struct {
 	a *big.Int
 	// Session key.
 	sk []byte
+}
+
+func (server *SRPServer) RegisterUser(user *SRPUser) error {
+	for _, u := range server.users {
+		if u.ident == user.ident {
+			return CPError{"user already registered"}
+		}
+	}
+	server.users = append(server.users, user)
+	return nil
 }
 
 func NewSRPUser(n, g, k, ident, pass string) (*SRPUser, error) {
