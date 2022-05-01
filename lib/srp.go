@@ -64,7 +64,7 @@ type SRPUser struct {
 
 // SRP client.
 type SRPClient struct {
-	session SRPClientSession
+	Session *SRPClientSession
 }
 
 // User session on the SRP client.
