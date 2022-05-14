@@ -60,6 +60,8 @@ type SRPUser struct {
 	v *big.Int
 	// Session key.
 	sk []byte
+	// Open session flag. true if there is an open session.
+	loggedIn bool
 }
 
 // SRP client.
