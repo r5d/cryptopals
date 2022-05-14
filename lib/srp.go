@@ -266,6 +266,35 @@ func (u *SRPUser) Salt() []byte {
 	return u.salt
 }
 
+func (client *SRPClient) LoggedIn() bool {
+	if client.Session == nil {
+		return false
+	}
+	return client.Session.loggedIn
+}
+
+func (client *SRPClient) LogIn() {
+	if client.Session == nil {
+		return
+	}
+	client.Session.loggedIn = true
+}
+
+func (client *SRPClient) LogOut() {
+	if client.Session == nil {
+		return
+	}
+	client.Session.loggedIn = false
+}
+
+func (client *SRPClient) Ident() string {
+	if !client.LoggedIn() {
+		return ""
+	} else {
+		return client.Session.ident
+	}
+}
+
 func NewSRPClientSession(n, g, k, ident string) (*SRPClientSession, error) {
 	var ok bool
 
