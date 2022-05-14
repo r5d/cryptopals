@@ -13,8 +13,6 @@ import (
 	"ricketyspace.net/cryptopals/lib"
 )
 
-// Usage:
-//
 func C36(args []string) {
 	if len(args) < 2 {
 		fmt.Println("Usage: cryptopals -c 36 [ client | server ] PORT")
@@ -102,11 +100,25 @@ func C36(args []string) {
 		}
 		hmac := []byte(cpacket[:len(cpacket)-1])
 		if !user.SessionKeyMacVerify(hmac) {
-			return fmt.Errorf("hmac verification: %v", hmac)
+			return fmt.Errorf("hmac verification failed")
 		}
 		// Login user.
 		user.LogIn()
 
+		return nil
+	}
+	// Logout user on the server.
+	serverLogoutUser := func(server *lib.SRPServer, ident string,
+		conn net.Conn) error {
+		user, err := server.GetUser(ident)
+		if err != nil {
+			return fmt.Errorf("get user: %v", err)
+		}
+		if !user.LoggedIn() {
+			return fmt.Errorf("user not logged in")
+		}
+		// Logout user.
+		user.LogOut()
 		return nil
 	}
 	// Handle connection from a client.
@@ -143,6 +155,14 @@ func C36(args []string) {
 			return
 		case parts[0] == "login":
 			err = serverLoginUser(server, parts[1:], conn)
+			if err != nil {
+				fmt.Fprintf(conn, "%v\n", err)
+			} else {
+				fmt.Fprintf(conn, "OK\n")
+			}
+			return
+		case parts[0] == "logout":
+			err = serverLogoutUser(server, parts[1], conn)
 			if err != nil {
 				fmt.Fprintf(conn, "%v\n", err)
 			} else {
@@ -335,6 +355,40 @@ func C36(args []string) {
 		client.LogIn()
 		return nil
 	}
+	// Logout user.
+	clientLogoutUser := func(client *lib.SRPClient) error {
+		// Make logout packet.
+		packet := fmt.Sprintf("%s+%s", "logout", client.Ident())
+
+		// Try to connect to server.
+		conn, err := net.Dial("tcp", fmt.Sprintf(":%d", port))
+		if err != nil {
+			return fmt.Errorf("unable connect to server: %v", err)
+		}
+		defer conn.Close()
+
+		// Send login packet to server.
+		_, err = fmt.Fprintf(conn, "%s\n", packet)
+		if err != nil {
+			return fmt.Errorf("logout send: %v", err)
+		}
+
+		// Wait and try to get logout ACK from server.
+		spacket, err := bufio.NewReader(conn).ReadString('\n')
+		if err != nil {
+			return fmt.Errorf("logout recv: %v", err)
+		}
+		// Remove newline character.
+		spacket = spacket[:len(spacket)-1]
+		if spacket != "OK" {
+			return fmt.Errorf("logout ack: %s", spacket)
+		}
+
+		// Logout user.
+		client.Session = nil
+
+		return nil
+	}
 	// Start SRP client.
 	clientSpawn := func() {
 		client := new(lib.SRPClient)
@@ -367,6 +421,13 @@ func C36(args []string) {
 					fmt.Printf("Login failed: %v\n", err)
 				} else {
 					fmt.Printf("Logged in!\n")
+				}
+			case client.LoggedIn() && msg_parts[0] == "logout":
+				err := clientLogoutUser(client)
+				if err != nil {
+					fmt.Printf("Logout failed: %v\n", err)
+				} else {
+					fmt.Printf("Logged out!\n")
 				}
 			}
 		}

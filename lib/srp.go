@@ -259,6 +259,9 @@ func (u *SRPUser) LogIn() {
 }
 
 func (u *SRPUser) LogOut() {
+	u.b = nil       // Reset secret ephemeral value
+	u.u = nil       // Reset scrambling parameter.
+	u.sk = []byte{} // Reset session key
 	u.loggedIn = false
 }
 
