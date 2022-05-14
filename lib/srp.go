@@ -8,26 +8,6 @@ import "math/big"
 // SRP - implementation.
 // Reference http://srp.stanford.edu/design.html
 
-// SRP Client UI - Spec
-//
-// > register s@ricketyspace.net
-// Enter password
-// > ******
-// Registering with server...registered!
-// > login s@ricketyspace.net
-// Enter password
-// > ******
-// Logging in...in!
-// s@ricketyspace.net>
-// s@ricketyspace.net> login s@ricketyspace.net
-// login command not allowed when logged in
-// s@ricketyspace.net> register rsd@gnu.org
-// register command not allowed when logged in
-// s@ricketyspace.net> logout
-// Logging out..out!
-// > register s@ricketyspace.net
-// Already registered!
-
 // SRP Server.
 type SRPServer struct {
 	users []*SRPUser

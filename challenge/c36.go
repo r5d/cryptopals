@@ -443,3 +443,32 @@ func C36(args []string) {
 		fmt.Println("uknown entity")
 	}
 }
+
+// Output:
+//
+// https://ricketyspace.net/cryptopals/c36.webm
+//
+// ./cryptopals -c 36 server 12000
+// Waiting for connection...
+// Waiting for connection...
+// Got connection from 127.0.0.1:39024
+// Waiting for connection...
+// Got connection from 127.0.0.1:28151
+// Waiting for connection...
+// Got connection from 127.0.0.1:46956
+// Waiting for connection...
+// Got connection from 127.0.0.1:3699
+//
+// ./cryptopals -c 36 client 12000
+// > register bob
+// password> theonjoy
+// Registered!
+// > login bob
+// password> theonjoy
+// Logged in!
+// bob> logout
+// Logged out!
+// > login bob
+// password> theon
+// Login failed: login failed: hmac verification failed
+// > ^C
