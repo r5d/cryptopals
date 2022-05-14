@@ -250,6 +250,22 @@ func (u *SRPUser) SessionKeyMacVerify(mac []byte) bool {
 	return u.h.MacVerify(u.salt, u.sk, mac)
 }
 
+func (u *SRPUser) LoggedIn() bool {
+	return u.loggedIn
+}
+
+func (u *SRPUser) LogIn() {
+	u.loggedIn = true
+}
+
+func (u *SRPUser) LogOut() {
+	u.loggedIn = false
+}
+
+func (u *SRPUser) Salt() []byte {
+	return u.salt
+}
+
 func NewSRPClientSession(n, g, k, ident string) (*SRPClientSession, error) {
 	var ok bool
 
