@@ -104,6 +104,15 @@ func (server *SRPServer) RegisterUser(user *SRPUser) error {
 	return nil
 }
 
+func (server *SRPServer) GetUser(ident string) (*SRPUser, error) {
+	for _, u := range server.users {
+		if u.ident == ident {
+			return u, nil
+		}
+	}
+	return nil, CPError{"user not found"}
+}
+
 func NewSRPUser(n, g, k, ident, pass string) (*SRPUser, error) {
 	var err error
 	var ok bool
