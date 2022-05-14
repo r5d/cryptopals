@@ -90,6 +90,8 @@ type SRPClientSession struct {
 	a *big.Int
 	// Session key.
 	sk []byte
+	// Open session flag. true if there is an open session.
+	loggedIn bool
 }
 
 func (server *SRPServer) RegisterUser(user *SRPUser) error {
