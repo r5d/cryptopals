@@ -1,4 +1,4 @@
-// Copyright © 2021 siddharth <s@ricketyspace.net>
+// Copyright © 2021 siddharth ravikumar <s@ricketyspace.net>
 // SPDX-License-Identifier: ISC
 
 package main
@@ -92,5 +92,7 @@ func main() {
 		challenge.C35(flag.Args())
 	case 36:
 		challenge.C36(flag.Args())
+	case 37:
+		challenge.C37(flag.Args())
 	}
 }
