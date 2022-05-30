@@ -403,6 +403,10 @@ func (s *SRPClientSession) ComputeSessionKey(salt []byte,
 	return nil
 }
 
+func (s *SRPClientSession) SetSessionKey(key []byte) {
+	s.sk = key
+}
+
 func (s *SRPClientSession) SessionKeyMac(salt []byte) ([]byte, error) {
 	if len(s.sk) < 1 {
 		return nil, CPError{"sk is invalid"}
