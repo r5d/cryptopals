@@ -1,11 +1,12 @@
 MOD=ricketyspace.net/cryptopals
+PKGS=${MOD} ${MOD}/challenge ${MOD}/lib
 
 build: fmt
 	go build
 .PHONY: build
 
 fmt:
-	go fmt ${MOD} ${MOD}/challenge ${MOD}/lib
+	go fmt ${PKGS}
 .PHONY: fmt
 
 test:
