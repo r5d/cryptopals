@@ -203,10 +203,6 @@ func (u *SRPUser) SetScramblingParam(a *big.Int) error {
 }
 
 func (u *SRPUser) ComputeSessionKey(a *big.Int) error {
-	if a.Cmp(big.NewInt(0)) != 1 {
-		return CPError{"a is invalid"}
-	}
-
 	// v^u
 	vu := new(big.Int)
 	vu.Exp(u.v, u.u, u.n)
@@ -355,9 +351,6 @@ func (s *SRPClientSession) ComputeSessionKey(salt []byte,
 	if len(salt) < 1 {
 		return CPError{"salt invalid"}
 	}
-	if len(pass) < 1 {
-		return CPError{"pass invalid"}
-	}
 
 	// salt+pass
 	sp := make([]byte, 0)
@@ -408,9 +401,6 @@ func (s *SRPClientSession) SetSessionKey(key []byte) {
 }
 
 func (s *SRPClientSession) SessionKeyMac(salt []byte) ([]byte, error) {
-	if len(s.sk) < 1 {
-		return nil, CPError{"sk is invalid"}
-	}
 	if len(salt) < 1 {
 		return nil, CPError{"salt is invalid"}
 	}
