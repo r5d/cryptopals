@@ -173,6 +173,21 @@ func (u *SRPUser) EphemeralKeyPub() (*big.Int, error) {
 	return pub, nil
 }
 
+func (u *SRPUser) EphemeralKeyPubSimple() (*big.Int, error) {
+	if u.g == nil || u.g.Cmp(big.NewInt(0)) != 1 {
+		return nil, CPError{"g is not initialized"}
+	}
+	if u.b == nil || u.b.Cmp(big.NewInt(0)) != 1 {
+		return nil, CPError{"b is not initialized"}
+	}
+
+	// pub is 'B'
+	pub := new(big.Int)
+	pub.Exp(u.g, u.b, u.n)
+
+	return pub, nil
+}
+
 func (u *SRPUser) SetScramblingParam(a *big.Int) error {
 	b, err := u.EphemeralKeyPub()
 	if err != nil {
@@ -196,6 +211,22 @@ func (u *SRPUser) SetScramblingParam(a *big.Int) error {
 	// Set scrambling paramter u
 	u.u = new(big.Int)
 	u.u.SetBytes(h)
+	if u.u.Cmp(big.NewInt(0)) != 1 {
+		return CPError{"u is invalid"}
+	}
+	return nil
+}
+
+func (u *SRPUser) SetScramblingParamSimple() error {
+	// random 128-bits
+	r, err := RandomBytes(16)
+	if err != nil {
+		return err
+	}
+
+	// Set scrambling paramter u
+	u.u = new(big.Int)
+	u.u.SetBytes(r)
 	if u.u.Cmp(big.NewInt(0)) != 1 {
 		return CPError{"u is invalid"}
 	}
@@ -346,6 +377,20 @@ func (s *SRPClientSession) SetScramblingParam(b *big.Int) error {
 	return nil
 }
 
+func (s *SRPClientSession) SetScramblingParamSimple(u []byte) error {
+	if len(u) < 16 {
+		return CPError{"server u is invalid"}
+	}
+
+	// Set scrambling paramter u
+	s.u = new(big.Int)
+	s.u.SetBytes(u)
+	if s.u.Cmp(big.NewInt(0)) != 1 {
+		return CPError{"u is invalid"}
+	}
+	return nil
+}
+
 func (s *SRPClientSession) ComputeSessionKey(salt []byte,
 	pass string, b *big.Int) error {
 	if len(salt) < 1 {
@@ -385,6 +430,44 @@ func (s *SRPClientSession) ComputeSessionKey(salt []byte,
 	// S = (B - (k * g^x)) ^ (a + u*x)
 	sec := new(big.Int)
 	sec.Exp(bkgx, aux, s.n)
+	sb := sec.Bytes()
+
+	// K = H(S)
+	m := make([]byte, 0)
+	m = append(m, sb...)
+	s.h.Message(m)
+	s.sk = s.h.Hash()
+
+	return nil
+}
+
+func (s *SRPClientSession) ComputeSessionKeySimple(salt []byte,
+	pass string, b *big.Int) error {
+	if len(salt) < 1 {
+		return CPError{"salt invalid"}
+	}
+
+	// salt+pass
+	sp := make([]byte, 0)
+	copy(sp, salt)
+	sp = append(sp, StrToBytes(pass)...)
+
+	// x = H(salt+pass)
+	x := new(big.Int)
+	s.h.Message(sp)
+	x.SetBytes(s.h.Hash())
+
+	// u * x
+	ux := new(big.Int)
+	ux.Mul(s.u, x)
+
+	// a + u*x
+	aux := new(big.Int)
+	aux.Add(s.a, ux)
+
+	// S = (B) ^ (a + u*x)
+	sec := new(big.Int)
+	sec.Exp(b, aux, s.n)
 	sb := sec.Bytes()
 
 	// K = H(S)

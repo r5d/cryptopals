@@ -397,3 +397,96 @@ func TestSRPSessionKey(t *testing.T) {
 		return
 	}
 }
+
+func TestSimplifiedSRP(t *testing.T) {
+	n := StripSpaceChars(
+		`ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024
+                 e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd
+                 3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec
+                 6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f
+                 24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361
+                 c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552
+                 bb9ed529077096966d670c354e4abc9804f1746c08ca237327fff
+                 fffffffffffff`)
+	g := "2"
+	k := "3"
+	ident := "s@ricketyspace.net"
+	pass := "d59d6c93af0f37f272d924979"
+
+	// Init srp server user.
+	user, err := NewSRPUser(n, g, k, ident, pass)
+	if err != nil {
+		t.Errorf("unable to create user on server: %v\n", err)
+		return
+	}
+
+	// Get server's pub for user.
+	user.EphemeralKeyGen()
+	pubB, err := user.EphemeralKeyPubSimple()
+	if err != nil {
+		t.Errorf("server ephemeral pub error: %v\n", err)
+		return
+	}
+
+	// Init srp client session.
+	session, err := NewSRPClientSession(n, g, k, ident)
+	if err != nil {
+		t.Errorf("unable to create client session: %v\n", err)
+		return
+	}
+
+	// Get client's pub for user.
+	pubA, err := session.EphemeralKeyPub()
+	if err != nil {
+		t.Errorf("client ephemeral pub error: %v\n", err)
+		return
+	}
+
+	// Compute server's scrambling parameter for user.
+	err = user.SetScramblingParamSimple()
+	if err != nil {
+		t.Errorf("unable generate server scrambling parameter: %v\n", err)
+		return
+	}
+
+	// Compute client's scrambling paramter for user.
+	err = session.SetScramblingParamSimple(user.u.Bytes())
+	if err != nil {
+		t.Errorf("unable generate client scrambling parameter: %v\n", err)
+		return
+	}
+
+	// Compute server's session key for user.
+	err = user.ComputeSessionKey(pubA)
+	if err != nil {
+		t.Errorf("unable to compute server's session key: %v", err)
+		return
+	}
+
+	// Compute client's session key for for user.
+	err = session.ComputeSessionKeySimple(user.salt, pass, pubB)
+	if err != nil {
+		t.Errorf("unable to compute client's session key: %v", err)
+		return
+	}
+
+	// Verify that the session key is the same.
+	if !BytesEqual(user.sk, session.sk) {
+		t.Errorf("server's and client's session key not equal:"+
+			" server_sk(%v): client_sk(%v)", user.sk, session.sk)
+		return
+	}
+
+	// Generate MAC of client session's session key
+	sMac, err := session.SessionKeyMac(user.salt)
+	if err != nil {
+		t.Errorf("unable to generate client session's mac: %v", err)
+		return
+	}
+
+	// Verify MAC with server.
+	if !user.SessionKeyMacVerify(sMac) {
+		t.Errorf("client session mac verify failed: %v", err)
+		return
+	}
+}
