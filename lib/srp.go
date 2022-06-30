@@ -254,7 +254,10 @@ func (u *SRPUser) ComputeSessionKey(a *big.Int) error {
 }
 
 func (u *SRPUser) SessionKeyMacVerify(mac []byte) bool {
-	return u.h.MacVerify(u.salt, u.sk, mac)
+	if BytesEqual(HmacSha256(u.sk, u.salt), mac) {
+		return true
+	}
+	return false
 }
 
 func (u *SRPUser) LoggedIn() bool {
@@ -487,5 +490,5 @@ func (s *SRPClientSession) SessionKeyMac(salt []byte) ([]byte, error) {
 	if len(salt) < 1 {
 		return nil, CPError{"salt is invalid"}
 	}
-	return s.h.Mac(salt, s.sk), nil
+	return HmacSha256(s.sk, salt), nil
 }
