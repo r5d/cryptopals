@@ -233,6 +233,10 @@ func (u *SRPUser) SetScramblingParamSimple() error {
 	return nil
 }
 
+func (u *SRPUser) GetScramblingParam() []byte {
+	return u.u.Bytes()
+}
+
 func (u *SRPUser) ComputeSessionKey(a *big.Int) error {
 	// v^u
 	vu := new(big.Int)
