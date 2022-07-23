@@ -124,17 +124,22 @@ func NewSRPUser(n, g, k, ident, pass string) (*SRPUser, error) {
 		return nil, err
 	}
 
-	// Generate private key `x` from salt+pass
-	m := make([]byte, 0)
-	copy(m, user.salt)
-	m = append(m, StrToBytes(pass)...)
-	user.h.Message(m)
-	user.x.SetBytes(user.h.Hash())
-
-	// Generate password verifier `v`
-	user.v.Exp(user.g, user.x, user.n)
+	// Compute verifier.
+	user.ComputeVerifier(pass)
 
 	return user, nil
+}
+
+func (u *SRPUser) ComputeVerifier(pass string) {
+	// Generate private key `x` from salt+pass
+	m := make([]byte, 0)
+	copy(m, u.salt)
+	m = append(m, StrToBytes(pass)...)
+	u.h.Message(m)
+	u.x.SetBytes(u.h.Hash())
+
+	// Generate password verifier `v`
+	u.v.Exp(u.g, u.x, u.n)
 }
 
 func (u *SRPUser) EphemeralKeyGen() {
