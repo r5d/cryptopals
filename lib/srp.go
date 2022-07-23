@@ -130,6 +130,10 @@ func NewSRPUser(n, g, k, ident, pass string) (*SRPUser, error) {
 	return user, nil
 }
 
+func (user *SRPUser) Ident() string {
+	return user.ident
+}
+
 func (u *SRPUser) ComputeVerifier(pass string) {
 	// Generate private key `x` from salt+pass
 	m := make([]byte, 0)
