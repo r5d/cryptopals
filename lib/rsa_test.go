@@ -50,3 +50,27 @@ func TestEGCD(t *testing.T) {
 	}
 
 }
+
+func TestInvMod(t *testing.T) {
+	a := big.NewInt(17)
+	b := big.NewInt(3120)
+	e := big.NewInt(2753) // Expected inverse.
+	i, err := invmod(a, b)
+	if err != nil {
+		t.Errorf("invmod(%v,%v) failed: %v", a, b, err)
+	}
+	if i.Cmp(e) != 0 {
+		t.Errorf("gcd(%v,%v) != %v", a, b, e)
+	}
+
+	a = big.NewInt(240)
+	b = big.NewInt(47)
+	e = big.NewInt(19) // Expected inverse.
+	i, err = invmod(a, b)
+	if err != nil {
+		t.Errorf("invmod(%v,%v) failed: %v", a, b, err)
+	}
+	if i.Cmp(e) != 0 {
+		t.Errorf("gcd(%v,%v) != %v", a, b, e)
+	}
+}
