@@ -58,6 +58,7 @@ func TestInvMod(t *testing.T) {
 	i, err := invmod(a, b)
 	if err != nil {
 		t.Errorf("invmod(%v,%v) failed: %v", a, b, err)
+		return
 	}
 	if i.Cmp(e) != 0 {
 		t.Errorf("gcd(%v,%v) != %v", a, b, e)
@@ -69,6 +70,31 @@ func TestInvMod(t *testing.T) {
 	i, err = invmod(a, b)
 	if err != nil {
 		t.Errorf("invmod(%v,%v) failed: %v", a, b, err)
+		return
+	}
+	if i.Cmp(e) != 0 {
+		t.Errorf("gcd(%v,%v) != %v", a, b, e)
+	}
+
+	a = big.NewInt(11)
+	b = big.NewInt(26)
+	e = big.NewInt(19) // Expected inverse.
+	i, err = invmod(a, b)
+	if err != nil {
+		t.Errorf("invmod(%v,%v) failed: %v", a, b, err)
+		return
+	}
+	if i.Cmp(e) != 0 {
+		t.Errorf("gcd(%v,%v) != %v", a, b, e)
+	}
+
+	a = big.NewInt(3)
+	b = big.NewInt(7)
+	e = big.NewInt(5) // Expected inverse.
+	i, err = invmod(a, b)
+	if err != nil {
+		t.Errorf("invmod(%v,%v) failed: %v", a, b, err)
+		return
 	}
 	if i.Cmp(e) != 0 {
 		t.Errorf("gcd(%v,%v) != %v", a, b, e)
