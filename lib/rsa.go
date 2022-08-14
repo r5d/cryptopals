@@ -175,3 +175,14 @@ func RSAGenKey() (*RSAPair, error) {
 
 	return pair, nil
 }
+
+func (r *RSAPub) Encrypt(msg []byte) []byte {
+	// Convert message to big int.
+	m := big.NewInt(0).SetBytes(msg)
+
+	// Encrypt.
+	c := big.NewInt(0).Exp(m, r.e, r.n)
+
+	return c.Bytes()
+}
+
