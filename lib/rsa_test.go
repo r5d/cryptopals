@@ -136,3 +136,41 @@ func TestRSAGenKey(t *testing.T) {
 		return
 	}
 }
+
+func TestRSAEncryptDecrypt(t *testing.T) {
+	pair, err := RSAGenKey()
+	if err != nil {
+		t.Errorf("genkey: %v", err)
+		return
+	}
+	pub := pair.Public
+	prv := pair.Private
+
+	// [1] Encrypt.
+	msg := []byte("42")
+	enc := pub.Encrypt(msg)
+	if len(enc) < 1 {
+		t.Errorf("encrypt failed: %v", enc)
+		return
+	}
+	// [1] Decrypt.
+	dec := prv.Decrypt(enc)
+	if !BytesEqual(msg, dec) {
+		t.Errorf("decrypt failed: %v", dec)
+		return
+	}
+
+	// [2] Encrypt.
+	msg = []byte("0xd1a4a6e870b40a261827f17741c19facf80d01a537d55e59abe5d615d961a23f")
+	enc = pub.Encrypt(msg)
+	if len(enc) < 1 {
+		t.Errorf("encrypt failed: %v", enc)
+		return
+	}
+	// [2] Decrypt.
+	dec = prv.Decrypt(enc)
+	if !BytesEqual(msg, dec) {
+		t.Errorf("decrypt failed: %v", dec)
+		return
+	}
+}
