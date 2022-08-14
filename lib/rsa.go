@@ -186,3 +186,12 @@ func (r *RSAPub) Encrypt(msg []byte) []byte {
 	return c.Bytes()
 }
 
+func (r *RSAPrivate) Decrypt(cipher []byte) []byte {
+	// Convert cipher to big int.
+	c := big.NewInt(0).SetBytes(cipher)
+
+	// Decrypt.
+	m := big.NewInt(0).Exp(c, r.d, r.n)
+
+	return m.Bytes()
+}
