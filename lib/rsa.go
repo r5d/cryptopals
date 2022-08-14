@@ -4,6 +4,7 @@
 package lib
 
 import (
+	"crypto/rand"
 	"math/big"
 )
 
@@ -11,6 +12,22 @@ type GCDResult struct {
 	Gcd *big.Int
 	X   *big.Int // Bézout coefficient 'x'
 	Y   *big.Int // Bézout coefficient 'y'
+}
+
+// Represents an RSA key pair.
+type RSAPair struct {
+	Public  *RSAPub
+	Private *RSAPrivate
+}
+
+type RSAPub struct {
+	e *big.Int
+	n *big.Int
+}
+
+type RSAPrivate struct {
+	d *big.Int
+	n *big.Int
 }
 
 // Copy b to a.
@@ -97,4 +114,64 @@ func invmod(a, n *big.Int) (*big.Int, error) {
 		t0.Add(t0, n)
 	}
 	return t0, nil
+}
+
+func RSAGenKey() (*RSAPair, error) {
+	// Initialize.
+	e := big.NewInt(3)
+	d := big.NewInt(0)
+	n := big.NewInt(0)
+
+	// Compute n and d.
+	for {
+		// Generate prime p.
+		p, err := rand.Prime(rand.Reader, 1024)
+		if err != nil {
+			return nil, CPError{"unable to generate p"}
+		}
+
+		// Generate prime q.
+		q, err := rand.Prime(rand.Reader, 1024)
+		if err != nil {
+			return nil, CPError{"unable to generate q"}
+		}
+
+		// Calculate n.
+		n = big.NewInt(0).Mul(p, q)
+
+		// Calculate totient.
+		p1 := big.NewInt(0).Sub(p, big.NewInt(1)) // p-1
+		q1 := big.NewInt(0).Sub(q, big.NewInt(1)) // q-1
+		et := big.NewInt(0).Mul(p1, q1)           // Totient `et`.
+
+		// Calculate private key `d`.
+		d, err = invmod(e, et)
+		if err != nil {
+			continue // Inverse does not does. Try again.
+		}
+		break
+	}
+	if n.Cmp(big.NewInt(0)) <= 0 {
+		return nil, CPError{"unable to compute n"}
+	}
+	if d.Cmp(big.NewInt(0)) <= 0 {
+		return nil, CPError{"unable to compute d"}
+	}
+
+	// Make pub key.
+	pub := new(RSAPub)
+	pub.e = e
+	pub.n = biCopy(big.NewInt(0), n)
+
+	// Make private key.
+	prv := new(RSAPrivate)
+	prv.d = d
+	prv.n = biCopy(big.NewInt(0), n)
+
+	// Make key pair.
+	pair := new(RSAPair)
+	pair.Public = pub
+	pair.Private = prv
+
+	return pair, nil
 }

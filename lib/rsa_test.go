@@ -100,3 +100,39 @@ func TestInvMod(t *testing.T) {
 		t.Errorf("gcd(%v,%v) != %v", a, b, e)
 	}
 }
+
+func TestRSAGenKey(t *testing.T) {
+	pair, err := RSAGenKey()
+	if err != nil {
+		t.Errorf("genkey: %v", err)
+		return
+	}
+	if pair.Public == nil {
+		t.Error("genkey: pub key is nil")
+		return
+	}
+	if pair.Public.e.Cmp(big.NewInt(0)) < 1 {
+		t.Error("genkey: e is invalid")
+		return
+	}
+	if pair.Public.n.Cmp(big.NewInt(0)) < 1 {
+		t.Error("genkey: n is invalid")
+		return
+	}
+	if pair.Private == nil {
+		t.Error("genkey: private key is nil")
+		return
+	}
+	if pair.Private.d.Cmp(big.NewInt(0)) < 1 {
+		t.Error("genkey: d is invalid")
+		return
+	}
+	if pair.Private.n.Cmp(big.NewInt(0)) < 1 {
+		t.Error("genkey: n is invalid")
+		return
+	}
+	if pair.Public.n.Cmp(pair.Private.n) != 0 {
+		t.Error("genkey: public.n != private.n")
+		return
+	}
+}
