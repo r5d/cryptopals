@@ -8,7 +8,7 @@ finished set 1, 2, 3 and 4.
 
 ## running
 
-requires `go >= 1.11`
+requires `go >= 1.15`
 
 install it with:
 
