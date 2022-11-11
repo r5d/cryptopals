@@ -135,13 +135,13 @@ func C35(args []string) {
 		// Try to read DH paramters from packet.
 		params := lib.StrSplitAt('+', packet)
 		if len(params) != 2 {
-			return nil, lib.CPError{"DH paramters invalid"}
+			return nil, lib.CPError{Err: "DH paramters invalid"}
 		}
 
 		// Try make DH for this client connection.
 		dh, ok := lib.NewDH(params[0], params[1])
 		if !ok {
-			return nil, lib.CPError{"DH initialization failed"}
+			return nil, lib.CPError{Err: "DH initialization failed"}
 		}
 
 		// Send ACK to client.
@@ -158,7 +158,7 @@ func C35(args []string) {
 		// Parse client's DH public key.
 		cPub, ok := new(big.Int).SetString(lib.StripSpaceChars(packet), 10)
 		if !ok {
-			return nil, lib.CPError{"DH public key invalid"}
+			return nil, lib.CPError{Err: "DH public key invalid"}
 		}
 
 		// Send server's DH public key for this connection.
@@ -256,7 +256,7 @@ func C35(args []string) {
 		g := "2"
 		dh, ok := lib.NewDH(p, g)
 		if !ok {
-			return conn, nil, lib.CPError{"DH initialization failed"}
+			return conn, nil, lib.CPError{Err: "DH initialization failed"}
 		}
 
 		// Make DH packet: p+g
@@ -273,7 +273,7 @@ func C35(args []string) {
 		// Remove newline character.
 		spacket = spacket[:len(spacket)-1]
 		if spacket != "ACK" {
-			return conn, nil, lib.CPError{"ACK failed"}
+			return conn, nil, lib.CPError{Err: "ACK failed"}
 		}
 
 		// Send DH public key to server.
@@ -290,7 +290,7 @@ func C35(args []string) {
 		// Parse server's DH public key.
 		sPub, ok := new(big.Int).SetString(lib.StripSpaceChars(spacket), 10)
 		if !ok {
-			return conn, nil, lib.CPError{"Server's DH key invalid"}
+			return conn, nil, lib.CPError{Err: "Server's DH key invalid"}
 		}
 
 		// Return server connection and DH session key.
@@ -363,13 +363,13 @@ func C35(args []string) {
 		// Try to read DH paramters from packet.
 		params := lib.StrSplitAt('+', packet)
 		if len(params) != 2 {
-			return []string{}, lib.CPError{"DH paramters invalid"}
+			return []string{}, lib.CPError{Err: "DH paramters invalid"}
 		}
 
 		// Try make a DH from params.
 		_, ok := lib.NewDH(params[0], params[1])
 		if !ok {
-			return []string{}, lib.CPError{"DH initialization failed"}
+			return []string{}, lib.CPError{Err: "DH initialization failed"}
 		}
 		return params, nil
 	}
@@ -410,7 +410,7 @@ func C35(args []string) {
 		// Initialize DH.
 		dh, ok := lib.NewDH(p, g)
 		if !ok {
-			return conn, nil, lib.CPError{"DH initialization failed"}
+			return conn, nil, lib.CPError{Err: "DH initialization failed"}
 		}
 
 		// Make DH packet: p+g
@@ -427,7 +427,7 @@ func C35(args []string) {
 		// Remove newline character.
 		spacket = spacket[:len(spacket)-1]
 		if spacket != "ACK" {
-			return conn, nil, lib.CPError{"ACK failed"}
+			return conn, nil, lib.CPError{Err: "ACK failed"}
 		}
 
 		// Send DH public key to server.
@@ -444,7 +444,7 @@ func C35(args []string) {
 		// Parse server's DH public key.
 		sPub, ok := new(big.Int).SetString(lib.StripSpaceChars(spacket), 10)
 		if !ok {
-			return conn, nil, lib.CPError{"Server's DH key invalid"}
+			return conn, nil, lib.CPError{Err: "Server's DH key invalid"}
 		}
 
 		// Return server connection and server's DH public key.

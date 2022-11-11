@@ -70,7 +70,7 @@ func C37(args []string) {
 				16,
 			)
 			if !ok {
-				fmt.Errorf("unable to process pub key")
+				fmt.Printf("unable to process pub key")
 				return
 			}
 			if pow == 1 {

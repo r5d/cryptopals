@@ -128,18 +128,18 @@ func C34(args []string) {
 		// Try to read DH paramters from packet.
 		params := lib.StrSplitAt('+', packet)
 		if len(params) != 3 {
-			return nil, lib.CPError{"DH paramters invalid"}
+			return nil, lib.CPError{Err: "DH paramters invalid"}
 		}
 
 		// Try make DH for this client connection.
 		dh, ok := lib.NewDH(params[0], params[1])
 		if !ok {
-			return nil, lib.CPError{"DH initialization failed"}
+			return nil, lib.CPError{Err: "DH initialization failed"}
 		}
 		// Parse client's DH public key.
 		cPub, ok := new(big.Int).SetString(lib.StripSpaceChars(params[2]), 10)
 		if !ok {
-			return nil, lib.CPError{"DH public key invalid"}
+			return nil, lib.CPError{Err: "DH public key invalid"}
 		}
 
 		// Send server's DH public key for this connection.
@@ -237,7 +237,7 @@ func C34(args []string) {
 		g := "2"
 		dh, ok := lib.NewDH(p, g)
 		if !ok {
-			return conn, nil, lib.CPError{"DH initialization failed"}
+			return conn, nil, lib.CPError{Err: "DH initialization failed"}
 		}
 
 		// Make DH packet: p+g+pub.
@@ -257,7 +257,7 @@ func C34(args []string) {
 		// Parse server's DH public key.
 		sPub, ok := new(big.Int).SetString(lib.StripSpaceChars(spacket), 10)
 		if !ok {
-			return conn, nil, lib.CPError{"Server's DH key invalid"}
+			return conn, nil, lib.CPError{Err: "Server's DH key invalid"}
 		}
 
 		// Return server connection and DH session key.
@@ -330,13 +330,13 @@ func C34(args []string) {
 		// Try to read DH paramters from packet.
 		params := lib.StrSplitAt('+', packet)
 		if len(params) != 3 {
-			return []string{}, lib.CPError{"DH paramters invalid"}
+			return []string{}, lib.CPError{Err: "DH paramters invalid"}
 		}
 
 		// Try make a DH from params.
 		_, ok := lib.NewDH(params[0], params[1])
 		if !ok {
-			return []string{}, lib.CPError{"DH initialization failed"}
+			return []string{}, lib.CPError{Err: "DH initialization failed"}
 		}
 		return params, nil
 	}
@@ -353,7 +353,7 @@ func C34(args []string) {
 		// Make DH packet: p+g+p
 		pub, ok := new(big.Int).SetString(lib.StripSpaceChars(p), 16)
 		if !ok {
-			return conn, lib.CPError{"Unable to parse p"}
+			return conn, lib.CPError{Err: "Unable to parse p"}
 		}
 		packet := fmt.Sprintf("%v+%v+%v", p, g, pub)
 

@@ -55,7 +55,7 @@ func C27() {
 		// Check if `plain` high ASCII
 		for _, p := range plain {
 			if p >= 128 {
-				return plain, lib.CPError{"Has high ASCII values"}
+				return plain, lib.CPError{Err: "Has high ASCII values"}
 			}
 		}
 
