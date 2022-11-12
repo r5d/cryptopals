@@ -138,6 +138,10 @@ func (r *RSAPub) Encrypt(msg []byte) []byte {
 	return c.Bytes()
 }
 
+func (r *RSAPub) N() *big.Int {
+	return r.n
+}
+
 func (r *RSAPrivate) Decrypt(cipher []byte) []byte {
 	// Convert cipher to big int.
 	c := big.NewInt(0).SetBytes(cipher)
