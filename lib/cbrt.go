@@ -23,7 +23,7 @@ func BigCubeRoot(a *big.Float) *big.Float {
 		e = e.Mul(x, x)
 		e = e.Mul(e, x)
 
-		// x^2 - a
+		// x^3 - a
 		z := big.NewFloat(0).Sub(e, a)
 
 		return z
