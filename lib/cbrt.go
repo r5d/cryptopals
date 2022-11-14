@@ -41,10 +41,8 @@ func BigCubeRoot(a *big.Float) *big.Float {
 		return z
 	}
 
-	x0 := a     // Initial guess.
-	max := 1000 // Max iterations.
-	i := 0      // Current iteration.
-	for i < max {
+	x0 := a // Initial guess.
+	for i := 0; i < 1000; i++ {
 		// f(x0) / f'(x0)
 		d := fx(x0)
 		d = d.Quo(d, fxPrime(x0))
@@ -61,7 +59,6 @@ func BigCubeRoot(a *big.Float) *big.Float {
 			return x1
 		}
 
-		i += 1
 		x0 = x1
 	}
 	return nil
