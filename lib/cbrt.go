@@ -42,7 +42,7 @@ func BigCubeRoot(a *big.Float) *big.Float {
 	}
 
 	x0 := a // Initial guess.
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 1000000; i++ {
 		// f(x0) / f'(x0)
 		d := fx(x0)
 		d = d.Quo(d, fxPrime(x0))
