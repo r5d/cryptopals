@@ -33,7 +33,7 @@ func biCopy(a, b *big.Int) *big.Int {
 	return a
 }
 
-func invmod(a, n *big.Int) (*big.Int, error) {
+func InvMod(a, n *big.Int) (*big.Int, error) {
 	// Initialize.
 	t0 := big.NewInt(0)
 	t1 := big.NewInt(1)
@@ -97,7 +97,7 @@ func RSAGenKey() (*RSAPair, error) {
 		et := big.NewInt(0).Mul(p1, q1)           // Totient `et`.
 
 		// Calculate private key `d`.
-		d, err = invmod(e, et)
+		d, err = InvMod(e, et)
 		if err != nil {
 			continue // Inverse does not does. Try again.
 		}
