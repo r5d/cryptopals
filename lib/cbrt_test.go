@@ -21,3 +21,17 @@ func TestBigCubeRoot(t *testing.T) {
 		return
 	}
 }
+
+func TestBigIntCubeRoot(t *testing.T) {
+	a := big.NewInt(19683)
+	acr := BigIntCubeRoot(a)
+	if acr == nil {
+		t.Errorf("Could not find cube root of %v\n", a)
+		return
+	}
+	expected := big.NewInt(27)
+	if big.NewInt(0).Sub(acr, expected).Cmp(big.NewInt(0)) != 0 {
+		t.Errorf("Could not find cube root of %v (%v)\n", a, acr)
+		return
+	}
+}
