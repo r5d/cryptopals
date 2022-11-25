@@ -13,6 +13,7 @@ func C39() {
 	rsa, err := lib.RSAGenKey()
 	if err != nil {
 		fmt.Printf("gen key failed: %v", err)
+		return
 	}
 
 	msg := []byte("42")
