@@ -2,7 +2,7 @@
 
 trying out the challenges from [cryptopals.com][cp].
 
-finished set 1, 2, 3 and 4.
+finished set 1, 2, 3, 4 and 5.
 
 [cp]: https://cryptopals.com
 
