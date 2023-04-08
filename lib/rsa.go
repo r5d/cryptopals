@@ -139,7 +139,7 @@ func (r *RSAPub) Encrypt(msg []byte) []byte {
 }
 
 func (r *RSAPub) E() *big.Int {
-	return r.n
+	return r.e
 }
 
 func (r *RSAPub) N() *big.Int {
